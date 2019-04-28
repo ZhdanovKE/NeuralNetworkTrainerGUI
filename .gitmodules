@@ -1,0 +1,3 @@
+[submodule "NeuralNetworkTrainer"]
+	path = NeuralNetworkTrainer
+	url = https://github.com/ZhdanovKE/NeuralNetworkTrainer
