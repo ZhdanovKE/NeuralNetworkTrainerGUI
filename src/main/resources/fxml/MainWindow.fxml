@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="539.0" prefWidth="857.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.MainWindowController">
+    <children>
+      <Button fx:id="loadSamplesButton" layoutX="702.0" layoutY="44.0" onAction="#handleLoadSamplesButtonAction" text="Load Samples..." />
+      <Button fx:id="trainNNButton" layoutX="223.0" layoutY="139.0" mnemonicParsing="false" onAction="#handleTrainNNButtonAction" text="Train Neural Network..." />
+      <Button fx:id="saveNNButton" layoutX="223.0" layoutY="239.0" mnemonicParsing="false" onAction="#handleSaveNNButtonAction" text="Save Neural Network..." />
+      <Button fx:id="loadNNButton" layoutX="223.0" layoutY="44.0" mnemonicParsing="false" onAction="#handleLoadNNButtonAction" text="Load Neural Network..." />
+      <Button fx:id="testNNButton" layoutX="223.0" layoutY="186.0" mnemonicParsing="false" onAction="#handleTestNNButtonAction" text="Test Neural Network..." />
+      <ScrollPane fitToWidth="true" layoutY="423.0" prefHeight="143.0" prefWidth="869.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <content>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="129.0" prefWidth="851.0">
+               <children>
+                  <TextArea fx:id="statusMessagesArea" prefHeight="143.0" prefWidth="903.0" AnchorPane.bottomAnchor="-14.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="-2.0" />
+               </children>
+            </AnchorPane>
+        </content>
+      </ScrollPane>
+      <Button fx:id="createNNButton" layoutX="223.0" layoutY="91.0" mnemonicParsing="false" onAction="#handleCreateNNButtonAction" text="Create Neural Network..." />
+      <ListView fx:id="networksListView" layoutX="14.0" layoutY="44.0" prefHeight="315.0" prefWidth="200.0" />
+      <Label layoutX="14.0" layoutY="14.0" text="Networks:" />
+      <ListView fx:id="samplesListView" layoutX="483.0" layoutY="44.0" prefHeight="315.0" prefWidth="200.0" />
+      <Label layoutX="483.0" layoutY="14.0" text="Samples:" />
+    </children>
+</AnchorPane>

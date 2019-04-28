@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="543.0" prefWidth="611.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.LoadSamplesWindowController">
+   <children>
+      <GridPane layoutX="109.0" layoutY="14.0" prefHeight="450.0" prefWidth="606.0" AnchorPane.bottomAnchor="64.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="222.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="116.0" minWidth="10.0" prefWidth="116.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="59.0" minHeight="10.0" prefHeight="40.0" vgrow="NEVER" />
+          <RowConstraints maxHeight="95.0" minHeight="1.0" prefHeight="35.0" vgrow="NEVER" />
+          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="375.0" vgrow="ALWAYS" />
+        </rowConstraints>
+         <children>
+            <Button fx:id="chooseFileButton" mnemonicParsing="false" onAction="#handleChooseFileButtonAction" text="Choose file..." GridPane.columnIndex="2" GridPane.halignment="RIGHT" />
+            <TextField fx:id="filenameField" onAction="#handleFilenameFieldAction" GridPane.columnIndex="1" />
+            <Label text="CSV File:" />
+            <Label text="Loaded data:" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <TableView fx:id="samplesTableView" editable="true" prefHeight="97.0" prefWidth="324.0" GridPane.columnSpan="3" GridPane.rowIndex="2" />
+         </children>
+      </GridPane>
+      <HBox alignment="BOTTOM_RIGHT" layoutX="400.0" layoutY="403.0" prefHeight="31.0" prefWidth="203.0" spacing="10.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
+         <children>
+            <Button fx:id="loadButton" defaultButton="true" mnemonicParsing="false" onAction="#handleLoadButtonAction" text="Load And Close" />
+            <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" onAction="#handleCancelButtonAction" text="Cancel" />
+         </children>
+      </HBox>
+      <Button fx:id="addSampleButton" layoutX="14.0" layoutY="454.0" mnemonicParsing="false" onAction="#handleAddSampleButtonAction" text="+" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="13.0" />
+      <Button fx:id="removeSampleButton" layoutX="52.0" layoutY="454.0" mnemonicParsing="false" onAction="#handleRemoveSampleButtonAction" prefHeight="31.0" prefWidth="31.0" text="-" AnchorPane.bottomAnchor="28.0" AnchorPane.leftAnchor="52.0" />
+      <TextField fx:id="nameField" layoutX="157.0" layoutY="469.0" prefHeight="31.0" prefWidth="215.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="157.0" AnchorPane.rightAnchor="239.0" />
+      <Label layoutX="95.0" layoutY="474.0" text="Load as:" AnchorPane.bottomAnchor="19.0" AnchorPane.leftAnchor="95.0" />
+   </children>
+</AnchorPane>

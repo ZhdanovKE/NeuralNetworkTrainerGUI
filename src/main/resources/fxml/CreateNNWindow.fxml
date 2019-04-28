@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="179.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.CreateNNWindowController">
+   <children>
+      <Button fx:id="cancelButton" cancelButton="true" layoutX="541.0" layoutY="135.0" mnemonicParsing="false" onAction="#handleCancelButtonAction" text="Cancel" />
+      <Button fx:id="createButton" defaultButton="true" layoutX="462.0" layoutY="135.0" mnemonicParsing="false" onAction="#handleCreateButtonAction" text="Create" />
+      <TextField fx:id="nInputsField" layoutX="24.0" layoutY="38.0" prefHeight="31.0" prefWidth="97.0" promptText="Inputs" text="1" />
+      <TextField fx:id="nOutputsField" layoutX="483.0" layoutY="38.0" prefHeight="31.0" prefWidth="89.0" promptText="Outputs" text="1" />
+      <TableView fx:id="hiddenLayerSizesTable" editable="true" layoutX="167.0" layoutY="30.0" prefHeight="76.0" prefWidth="242.0" />
+      <Button fx:id="addLayerButton" layoutX="419.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleAddLayerButtonAction" text="+" />
+      <Button fx:id="deleteLayerButton" layoutX="419.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleRemoveLayerButtonAction" prefHeight="31.0" prefWidth="31.0" text="-" />
+      <Label layoutX="24.0" layoutY="5.0" text="Number of inputs" />
+      <Label layoutX="483.0" layoutY="5.0" text="Number of outputs" />
+      <Label layoutX="167.0" layoutY="4.0" text="Sizes of hidden layers (min 1 layer)" />
+      <CheckBox fx:id="randomWeightsCheckbox" layoutX="288.0" layoutY="130.0" mnemonicParsing="false" text="Random weights" />
+      <TextField fx:id="nameField" layoutX="75.0" layoutY="125.0" />
+      <Label layoutX="22.0" layoutY="130.0" text="Name:" />
+   </children>
+</AnchorPane>

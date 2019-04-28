@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.chart.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="615.0" minWidth="399.0" prefHeight="615.0" prefWidth="399.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.TrainNNWindowController">
+   <children>
+      <GridPane layoutX="14.0" layoutY="14.0" prefHeight="209.0" prefWidth="355.0" AnchorPane.bottomAnchor="374.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="25.0" AnchorPane.topAnchor="14.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="172.0" minWidth="10.0" prefWidth="172.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="180.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="31.0" minWidth="31.0" prefWidth="31.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Number of epochs:" GridPane.rowIndex="2" />
+            <Label text="Performance goal:" GridPane.rowIndex="3" />
+            <TextField fx:id="nEpochsField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="2" />
+            <TextField fx:id="performanceGoalField" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+            <Label text="Network:" />
+            <Button fx:id="startStopTrainButton" mnemonicParsing="false" onAction="#handleStartStopTrainingButtonAction" text="Start Training" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="RIGHT" GridPane.rowIndex="5" />
+            <ProgressBar fx:id="trainingProgressBar" maxWidth="1.7976931348623157E308" prefHeight="23.0" prefWidth="355.0" progress="0.0" GridPane.columnSpan="3" GridPane.rowIndex="4" />
+            <Label text="Trained performance:" GridPane.rowIndex="6" />
+            <Label fx:id="trainedPerformanceLabel" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="6" />
+            <ComboBox fx:id="nnComboBox" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="184.0" promptText="Choose..." GridPane.columnIndex="1" GridPane.columnSpan="2">
+               <GridPane.margin>
+                  <Insets />
+               </GridPane.margin>
+            </ComboBox>
+            <ComboBox fx:id="samplesComboBox" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="159.0" promptText="Choose..." GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <Button fx:id="addSampleButton" minWidth="31.0" mnemonicParsing="false" onAction="#handleAddSampleButtonAction" text="+" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
+               <children>
+                  <Label text="Samples" />
+                  <Label fx:id="nSamplesVarsLabel" />
+                  <Label text=":" />
+               </children>
+            </HBox>
+         </children>
+      </GridPane>
+      <Button fx:id="saveCloseButton" layoutX="334.0" layoutY="323.0" mnemonicParsing="false" onAction="#handleSaveAndCloseButtonAction" text="Save And Close" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="93.0" />
+      <Button fx:id="cancelButton" layoutX="471.0" layoutY="323.0" mnemonicParsing="false" onAction="#handleCancelButtonAction" text="Cancel" AnchorPane.bottomAnchor="22.0" AnchorPane.rightAnchor="14.0" />
+      <LineChart fx:id="performanceLineChart" layoutX="15.0" layoutY="223.0" legendVisible="false" prefHeight="266.0" prefWidth="370.0" title="Performance over epochs" AnchorPane.bottomAnchor="117.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
+        <xAxis>
+          <NumberAxis label="Epoch" side="BOTTOM" />
+        </xAxis>
+        <yAxis>
+          <NumberAxis side="LEFT" />
+        </yAxis>
+      </LineChart>
+      <HBox alignment="CENTER_RIGHT" layoutX="7.0" layoutY="483.0" prefHeight="60.0" prefWidth="356.0" spacing="10.0" AnchorPane.bottomAnchor="65.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="4.0">
+         <children>
+            <Label text="Save as:" />
+            <TextField fx:id="newNameField" />
+            <Button fx:id="saveButton" mnemonicParsing="false" onAction="#handleSaveButtonAction" text="Save" />
+         </children>
+         <opaqueInsets>
+            <Insets />
+         </opaqueInsets>
+         <padding>
+            <Insets right="10.0" />
+         </padding>
+      </HBox>
+   </children>
+</AnchorPane>

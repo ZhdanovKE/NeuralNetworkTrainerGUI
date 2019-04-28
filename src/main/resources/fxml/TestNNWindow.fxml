@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="421.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.TestNNWindowController">
+   <children>
+      <Button fx:id="closeButton" cancelButton="true" layoutX="505.0" layoutY="344.0" mnemonicParsing="false" onAction="#handleCloseButtonAction" text="Close" AnchorPane.bottomAnchor="26.0" AnchorPane.rightAnchor="39.0" />
+      <GridPane layoutX="5.0" layoutY="6.0" prefHeight="331.0" prefWidth="577.0" AnchorPane.bottomAnchor="62.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="6.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="NEVER" maxWidth="110.0" minWidth="110.0" prefWidth="110.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="Inputs (between 0 and 1):" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Label text="Outputs:" GridPane.columnIndex="2" GridPane.halignment="CENTER" GridPane.rowIndex="1" />
+            <Button fx:id="evaluateButton" defaultButton="true" disable="true" maxWidth="96.0" mnemonicParsing="false" onAction="#handleEvaluateButtonAction" prefWidth="96.0" text="Evaluate -&gt;" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.rowSpan="2" GridPane.valignment="CENTER" />
+            <TableView fx:id="inputTableView" editable="true" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="2" GridPane.rowSpan="2" />
+            <TableView fx:id="outputTableView" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="2" GridPane.rowSpan="2" />
+            <HBox prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.rowIndex="4">
+               <children>
+                  <Button fx:id="addInputButton" mnemonicParsing="false" onAction="#handleAddInputButtonAction" text="+" />
+                  <Button fx:id="removeInputButton" minWidth="31.0" mnemonicParsing="false" onAction="#handleRemoveInputButtonAction" text="-" />
+               </children>
+            </HBox>
+            <Label text="Neural Network:" GridPane.halignment="RIGHT">
+               <padding>
+                  <Insets right="10.0" />
+               </padding>
+            </Label>
+            <ComboBox fx:id="nnCombobox" prefHeight="31.0" prefWidth="213.0" promptText="Choose..." GridPane.columnIndex="1" GridPane.columnSpan="2" />
+         </children>
+      </GridPane>
+   </children>
+</AnchorPane>
