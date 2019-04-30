@@ -80,6 +80,25 @@ public class NamedObjectRepository<T> {
         return nameObjectMap.containsKey(name);
     }
     
+    // O(n) time due to name removal from the names list
+    // Preserve the order of the names
+    public void rename(String oldName, String newName) {
+        if (!containsName(oldName)) {
+            throw new IllegalArgumentException("Object with name " + oldName +  
+                    " doesn't exist");
+        }
+        if (newName == null) {
+            throw new NullPointerException("New name cannot be null");
+        }
+        
+        T object = nameObjectMap.remove(oldName);
+        nameObjectMap.put(newName, object);
+        
+        // Preserving the order
+        int nameIdx = names.indexOf(oldName);
+        names.set(nameIdx, newName);
+    }
+    
     // O(1) time
     public int size() {
         return nameObjectMap.size();
