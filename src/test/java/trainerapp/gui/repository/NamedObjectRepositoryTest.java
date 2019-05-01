@@ -5,6 +5,7 @@ import java.util.List;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import static org.junit.Assert.*;
+import org.mockito.Mockito;
 
 /**
  *
@@ -230,5 +231,58 @@ public class NamedObjectRepositoryTest {
         
         assertThat(newObjectsList, CoreMatchers.hasItems(oldObjectsList.toArray()));
         assertThat(oldObjectsList, CoreMatchers.hasItems(newObjectsList.toArray()));
+    }
+    
+    @Test
+    public void testRename_OldNameExistAndNewNameNotNull_OnNameChangeCalled() {
+        System.out.println("rename");
+        String oldName = "Old name";
+        String newName = "New name";
+        Object object = new Object();
+        NamedObjectRepository instance = Mockito.spy(NamedObjectRepository.class);
+
+        instance.add(oldName, object);
+        
+        instance.rename(oldName, newName);
+        
+        Mockito.verify(instance, Mockito.times(1)).onNameChange(object, 
+                oldName, newName);
+    }
+    
+    @Test
+    public void testSetOnNameChangeListener_RenameCalled_ListenerCalled() {
+        System.out.println("setOnNameChangeListener");
+        String oldName = "Old name";
+        String newName = "New name";
+        Object object = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add(oldName, object);
+        NamedObjectRepository.NameChangeListener listener = Mockito.mock(
+            NamedObjectRepository.NameChangeListener.class);
+        
+        instance.setOnNameChangeListener(listener);
+        instance.rename(oldName, newName);
+        
+        Mockito.verify(listener, Mockito.times(1)).nameChanged(object, 
+                oldName, newName);
+    }
+    
+    @Test
+    public void testRemoveOnNameChangeListener_RenameCalled_ListenerNotCalled() {
+        System.out.println("removeOnNameChangeListener");
+        String oldName = "Old name";
+        String newName = "New name";
+        Object object = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add(oldName, object);
+        NamedObjectRepository.NameChangeListener listener = Mockito.mock(
+            NamedObjectRepository.NameChangeListener.class);
+        
+        instance.setOnNameChangeListener(listener);
+        instance.removeOnNameChangeListener();
+        instance.rename(oldName, newName);
+        
+        Mockito.verify(listener, Mockito.never()).nameChanged(Mockito.anyObject(), 
+                Mockito.anyString(), Mockito.anyString());
     }
 }
