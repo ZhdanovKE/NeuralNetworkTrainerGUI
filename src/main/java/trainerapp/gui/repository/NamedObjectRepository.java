@@ -18,6 +18,12 @@ public class NamedObjectRepository<T> {
     private final ObservableList<String> names;
     private final ObservableList<T> objects;
     
+    public interface NameChangeListener<E> {
+        void nameChanged(E object, String oldName, String newName);
+    }
+    
+    private NameChangeListener<T> listener;
+    
     public NamedObjectRepository() {
         nameObjectMap = new LinkedHashMap<>();
         names = FXCollections.observableArrayList();
@@ -97,6 +103,22 @@ public class NamedObjectRepository<T> {
         // Preserving the order
         int nameIdx = names.indexOf(oldName);
         names.set(nameIdx, newName);
+        
+        onNameChange(object, oldName, newName);
+    }
+    
+    protected void onNameChange(T object, String oldName, String newName) {
+        if (listener != null) {
+            listener.nameChanged(object, oldName, newName);
+        }
+    }
+    
+    public void setOnNameChangeListener(NameChangeListener<T> listener) {
+        this.listener = listener;
+    }
+    
+    public void removeOnNameChangeListener() {
+        this.listener = null;
     }
     
     // O(1) time
