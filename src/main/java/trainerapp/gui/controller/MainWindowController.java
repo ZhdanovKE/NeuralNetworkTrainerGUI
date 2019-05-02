@@ -19,6 +19,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
+import trainerapp.gui.facade.ListViewEditingFacade;
 
 /**
  * Main Window Controller class
@@ -39,7 +40,8 @@ public class MainWindowController implements Initializable {
     private TextArea statusMessagesArea;
     
     @FXML
-    private ListView<String> networksListView;
+    private ListView<NeuralNetwork> networksListView;
+    private ListViewEditingFacade<NeuralNetwork> networksListViewFacade;
     
     private NamedObjectRepository<NeuralNetwork> nnRepository;
     
@@ -70,13 +72,12 @@ public class MainWindowController implements Initializable {
             reportMessage("First create or load a neural network");
             return;
         }
-        String selectedNNName = networksListView.getSelectionModel().
+        NeuralNetwork selectedNN = networksListView.getSelectionModel().
                 getSelectedItem();
-        if (selectedNNName == null) {
+        if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
         }
-        NeuralNetwork selectedNN = nnRepository.get(selectedNNName);
         String selectedRepoName = samplesListView.getSelectionModel().getSelectedItem();
         SamplesRepository<Double> selectedRepo = null;
         if (selectedRepoName != null) {
@@ -136,24 +137,26 @@ public class MainWindowController implements Initializable {
             reportMessage("First create or load a neural network");
             return;
         }
-        String selectedNNName = networksListView.getSelectionModel().
+        NeuralNetwork selectedNN = networksListView.getSelectionModel().
                 getSelectedItem();
-        if (selectedNNName == null) {
+        if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
         }
-        NeuralNetwork selectedNN = nnRepository.get(selectedNNName);
-        
         Window thisWindow = ((Node)event.getSource()).getScene().getWindow();
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Save Neural Network File");
         fileChooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("All Files", "*.*"));
         if (selectedNN instanceof NamedNeuralNetwork) {
-            fileChooser.setInitialFileName(((NamedNeuralNetwork) selectedNN).getName() + ".dat");
+            fileChooser.setInitialFileName(
+                    ((NamedNeuralNetwork) selectedNN).getName().trim().
+                            replaceAll("\\s+", "_") + ".dat");
         }
         else {
-            fileChooser.setInitialFileName(selectedNNName + ".dat");
+            fileChooser.setInitialFileName(
+                    nnRepository.getNameForObject(selectedNN).trim().
+                            replaceAll("\\s+", "_") + ".dat");
         }
         File selectedFile = fileChooser.showSaveDialog(thisWindow);
         if (selectedFile != null) {
@@ -189,6 +192,9 @@ public class MainWindowController implements Initializable {
     private void addNetworkToList(NeuralNetwork nn, String name) {
         if (nnRepository.containsName(name)) {
             name = name + UNIQUE_SUFFIX;
+            if (nn instanceof NamedNeuralNetwork) {
+                ((NamedNeuralNetwork) nn).setName(name);
+            }
         }
         nnRepository.add(name, nn);
         focusNetworkIfNecessary();
@@ -212,13 +218,12 @@ public class MainWindowController implements Initializable {
             reportMessage("First create or load a neural network");
             return;
         }
-        String selectedNNName = networksListView.getSelectionModel().
+        NeuralNetwork selectedNN = networksListView.getSelectionModel().
                 getSelectedItem();
-        if (selectedNNName == null) {
+        if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
         }
-        NeuralNetwork selectedNN = nnRepository.get(selectedNNName);
         try {
             Window thisWindow = ((Node)event.getSource()).getScene().getWindow();
             
@@ -237,8 +242,14 @@ public class MainWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         nnRepository = new NamedObjectRepository<>();
+        nnRepository.setOnNameChangeListener((object, oldName, newName) -> {
+            if (object instanceof NamedNeuralNetwork) {
+                ((NamedNeuralNetwork) object).setName(newName);
+            }
+        });
         samplesRepoRepository = new NamedObjectRepository<>();
-        networksListView.setItems(nnRepository.getNamesObservableList());
+        networksListViewFacade = new ListViewEditingFacade<>(networksListView, 
+                nnRepository);
         samplesListView.setItems(samplesRepoRepository.getNamesObservableList());
         
         trainNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));

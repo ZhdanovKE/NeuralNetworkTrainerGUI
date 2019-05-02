@@ -18,6 +18,12 @@ public class NamedObjectRepository<T> {
     private final ObservableList<String> names;
     private final ObservableList<T> objects;
     
+    public interface NameChangeListener<E> {
+        void nameChanged(E object, String oldName, String newName);
+    }
+    
+    private NameChangeListener<T> listener;
+    
     public NamedObjectRepository() {
         nameObjectMap = new LinkedHashMap<>();
         names = FXCollections.observableArrayList();
@@ -78,6 +84,49 @@ public class NamedObjectRepository<T> {
     // O(1) time
     public boolean containsName(String name) {
         return nameObjectMap.containsKey(name);
+    }
+    
+    // O(n) time due to name removal from the names list
+    // Preserve the order of the names
+    public void rename(String oldName, String newName) {
+        if (!containsName(oldName)) {
+            throw new IllegalArgumentException("Object with name " + oldName +  
+                    " doesn't exist");
+        }
+        if (newName == null) {
+            throw new NullPointerException("New name cannot be null");
+        }
+        if (newName.equals(oldName)) {
+            // same name => do nothing
+            return;
+        }
+        if (containsName(newName)) {
+            throw new IllegalArgumentException("Object with name " + newName + 
+                    " already exists");
+        }
+        
+        T object = nameObjectMap.remove(oldName);
+        nameObjectMap.put(newName, object);
+        
+        // Preserving the order
+        int nameIdx = names.indexOf(oldName);
+        names.set(nameIdx, newName);
+        
+        onNameChange(object, oldName, newName);
+    }
+    
+    protected void onNameChange(T object, String oldName, String newName) {
+        if (listener != null) {
+            listener.nameChanged(object, oldName, newName);
+        }
+    }
+    
+    public void setOnNameChangeListener(NameChangeListener<T> listener) {
+        this.listener = listener;
+    }
+    
+    public void removeOnNameChangeListener() {
+        this.listener = null;
     }
     
     // O(1) time
