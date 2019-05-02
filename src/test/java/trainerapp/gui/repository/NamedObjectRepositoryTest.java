@@ -13,20 +13,7 @@ import org.mockito.Mockito;
  */
 public class NamedObjectRepositoryTest {
     
-    private NamedObjectRepository<Object> repository;
-    
     public NamedObjectRepositoryTest() {
-    }
-    
-    public void setUp() {
-        repository = new NamedObjectRepository<>();
-        repository.add("Name 1", "Object 1");
-        repository.add("Name 2", "Object 2");
-        repository.add("Name 3", "Object 3");
-    }
-    
-    public void cleanUp() {
-        repository = null;
     }
 
     /**
