@@ -1,26 +1,17 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package trainerapp.gui.facade;
 
-import java.util.AbstractList;
-import java.util.function.BiConsumer;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.util.StringConverter;
-import javax.swing.text.TableView;
 import trainerapp.gui.repository.NamedObjectRepository;
 
 /**
  * A wrapper around a {@code ListView} containing a {@code NamedObjectRepository} and  
- * adding the rename abilities to
+ * adding the rename ability to
  * the loaded items from the {@code NamedObjectRepository}.
- * @param <T> Type of items stored in the underlying {@code TableView}.
+ * @param <T> Type of items stored in the underlying {@code ListView}.
  * @author Konstantin Zhdanov
  */
 public class ListViewEditingFacade<T> {
@@ -40,6 +31,14 @@ public class ListViewEditingFacade<T> {
         }
     };
     
+    /**
+     * Create a Facade for the {@link listView} which holds elements of the {@link repo}
+     * and allows a user to rename the objects of the {@link repo}.
+     * @param listView a {@code ListView} instance to be wrapped and enhanced
+     * with the editing ability.
+     * @param repo a {@NamedObjectRepository} instance which elements are to be
+     * the {@link listView}'s items.
+     */
     public ListViewEditingFacade(ListView<T> listView, NamedObjectRepository<T> repo) {
         if (listView == null || repo == null) {
             throw new NullPointerException("Arguments cannot be null");
@@ -70,6 +69,16 @@ public class ListViewEditingFacade<T> {
         
         private TextField textField;
         
+        /**
+         * Create a cell that allows changing it's text value via showing
+         * a {@code TextField} and will inform the outer code that the 
+         * change has been made.
+         * @param converter an instance of {@code StringConverter<E>} used for
+         * converting the items of type {@link E} into String and vice versa. 
+         * @param nameChangeHandler an instance of {@code NameChangeHandler<E>}
+         * to be called when the successful change of the cell item's to be
+         * made on the underlying model.
+         */
         public EditingCell(StringConverter<E> converter, 
                 NameChangeHandler<E> nameChangeHandler) {
             textField = null;
@@ -77,6 +86,12 @@ public class ListViewEditingFacade<T> {
             this.nameChangeHandler = nameChangeHandler;
         }
         
+        /**
+         * Call the provided handler to let outer code handle the change and
+         * update the model of this cell.
+         * @param oldName The old name that has been changed.
+         * @param newName The new name to be set on the model.
+         */
         protected void handleNameChange(String oldName, String newName) {
             if (nameChangeHandler != null) {
                 nameChangeHandler.handle(oldName, newName);
