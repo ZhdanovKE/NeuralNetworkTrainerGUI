@@ -220,6 +220,22 @@ public class NamedObjectRepositoryTest {
         assertThat(oldObjectsList, CoreMatchers.hasItems(newObjectsList.toArray()));
     }
     
+    @Test(expected = IllegalArgumentException.class)
+    public void testRename_OldNameExistAndNewNameAlreadyExist_Throw() {
+        System.out.println("rename");
+        String oldName = "Old name";
+        String newName = "Another name";
+        Object object = new Object();
+        Object anotherObject = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add(oldName, object);
+        instance.add(newName, anotherObject);
+        
+        instance.rename(oldName, newName);
+        
+        fail("The test case must fail");
+    }
+    
     @Test
     public void testRename_OldNameExistAndNewNameNotNull_OnNameChangeCalled() {
         System.out.println("rename");
