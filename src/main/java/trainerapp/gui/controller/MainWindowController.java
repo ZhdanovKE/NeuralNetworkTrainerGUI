@@ -192,6 +192,9 @@ public class MainWindowController implements Initializable {
     private void addNetworkToList(NeuralNetwork nn, String name) {
         if (nnRepository.containsName(name)) {
             name = name + UNIQUE_SUFFIX;
+            if (nn instanceof NamedNeuralNetwork) {
+                ((NamedNeuralNetwork) nn).setName(name);
+            }
         }
         nnRepository.add(name, nn);
         focusNetworkIfNecessary();
