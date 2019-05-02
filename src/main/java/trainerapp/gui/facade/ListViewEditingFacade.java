@@ -105,8 +105,8 @@ public class ListViewEditingFacade<T> {
         
         private void setUpTextFieldListeners(final TextField tf) {
             tf.setOnAction((event) -> {
-                String newName = tf.getText();
-                if (newName != null && newName.length() > 0) {
+                String newName = tf.getText().trim();
+                if (newName.length() > 0) {
                     String oldName = converter.toString(this.getItem());
                     if (!newName.equals(oldName)) {
                         // notify that the name changed
@@ -127,8 +127,8 @@ public class ListViewEditingFacade<T> {
             tf.focusedProperty().addListener((observable, oldValue, newValue) -> {
                 // If focus is lost, then commit
                 if (!newValue) {
-                    String newName = tf.getText();
-                    if (newName != null && newName.length() > 0) {
+                    String newName = tf.getText().trim();
+                    if (newName.length() > 0) {
                         String oldName = converter.toString(this.getItem());
                         if (!newName.equals(oldName)) {
                             // notify that the name changed

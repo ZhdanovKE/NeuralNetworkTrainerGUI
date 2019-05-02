@@ -215,7 +215,7 @@ public class LoadSamplesWindowController implements Initializable {
 
     @FXML
     void handleLoadButtonAction(ActionEvent event) {
-        String name = nameField.getText();
+        String name = nameField.getText().trim();
         if (samples.size() == 0) {
             filenameFieldErrorFacade.showError("Samples are empty.\n Please upload a non-empty file.");
             return;

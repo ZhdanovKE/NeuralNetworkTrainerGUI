@@ -267,8 +267,8 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private boolean trySaveNetworkFromTrainer() {
-        String newName = newNameField.getText();
-        if (newName == null || newName.length() < 1) {
+        String newName = newNameField.getText().trim();
+        if (newName.length() < 1) {
             newNameFieldErrorFacade.showError("Need to provide a non-empty name for the trained network.");
             newNameField.requestFocus();
             return false;
