@@ -54,7 +54,12 @@ public class ListViewEditingFacade<T> {
     }
     
     private void updateNamedObject(String oldName, String newName) {
-        repo.rename(oldName, newName);
+        try {
+            repo.rename(oldName, newName);
+        }
+        catch (IllegalArgumentException e) {
+            // don't perform rename
+        }
     }
 
     private static class EditingCell<E> extends ListCell<E> {
