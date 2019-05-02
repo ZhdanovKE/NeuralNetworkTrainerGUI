@@ -46,7 +46,8 @@ public class MainWindowController implements Initializable {
     private NamedObjectRepository<NeuralNetwork> nnRepository;
     
     @FXML
-    private ListView<String> samplesListView;
+    private ListView<SamplesRepository<Double>> samplesListView;
+    private ListViewEditingFacade<SamplesRepository<Double>> samplesListViewFacade;
     
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
     
@@ -78,11 +79,8 @@ public class MainWindowController implements Initializable {
             reportMessage("First select a neural network");
             return;
         }
-        String selectedRepoName = samplesListView.getSelectionModel().getSelectedItem();
-        SamplesRepository<Double> selectedRepo = null;
-        if (selectedRepoName != null) {
-            selectedRepo = samplesRepoRepository.get(selectedRepoName);
-        }
+        SamplesRepository<Double> selectedRepo = samplesListView.
+                getSelectionModel().getSelectedItem();
         try {
             Window thisWindow = ((Node)event.getSource()).getScene().getWindow();
 
@@ -247,10 +245,12 @@ public class MainWindowController implements Initializable {
                 ((NamedNeuralNetwork) object).setName(newName);
             }
         });
-        samplesRepoRepository = new NamedObjectRepository<>();
         networksListViewFacade = new ListViewEditingFacade<>(networksListView, 
                 nnRepository);
-        samplesListView.setItems(samplesRepoRepository.getNamesObservableList());
+        
+        samplesRepoRepository = new NamedObjectRepository<>();        
+        samplesListViewFacade = new ListViewEditingFacade<>(samplesListView,
+                samplesRepoRepository);
         
         trainNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         testNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
