@@ -107,7 +107,7 @@ public class CreateNNWindowController implements Initializable {
         hiddenLayerSizesTableErrorFacade.hideError();
         
         boolean randomWeights = randomWeightsCheckbox.isSelected();
-        String name = nameField.getText();
+        String name = nameField.getText().trim();
         if (name.length() < 1) {
             nameFieldErrorFacade.showError("Name cannot be empty.\nChoose another name.");
             return;
