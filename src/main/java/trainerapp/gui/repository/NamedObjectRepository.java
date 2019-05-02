@@ -96,6 +96,14 @@ public class NamedObjectRepository<T> {
         if (newName == null) {
             throw new NullPointerException("New name cannot be null");
         }
+        if (newName.equals(oldName)) {
+            // same name => do nothing
+            return;
+        }
+        if (containsName(newName)) {
+            throw new IllegalArgumentException("Object with name " + newName + 
+                    " already exists");
+        }
         
         T object = nameObjectMap.remove(oldName);
         nameObjectMap.put(newName, object);
