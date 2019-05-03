@@ -42,9 +42,7 @@ public class TestNNWindowController implements Initializable {
     @FXML
     private TableView<ObservableList<Double>> inputTableView;
     private NumberTableViewFacade<Double> inputTableViewFacade;
-    
-    private final ObservableList<NeuralNetwork> nnList;
-    
+
     private NamedObjectRepository<NeuralNetwork> nnRepository;
     
     private final WritableValue<NeuralNetwork> chosenNetwork;
@@ -53,7 +51,6 @@ public class TestNNWindowController implements Initializable {
     
     public TestNNWindowController() {
         chosenNetwork = new SimpleObjectProperty<>(null);
-        nnList = FXCollections.observableArrayList();
     }
 
     private void closeWindow(ActionEvent event) {
@@ -108,10 +105,7 @@ public class TestNNWindowController implements Initializable {
     }
     
     private void updateNetworkList() {
-        nnList.clear();
-        nnRepository.getNames().forEach((name) -> {
-            nnList.add(nnRepository.get(name));
-        });
+        nnCombobox.setItems(nnRepository.getObjectsObservableList());
     }
     
     /**
@@ -120,7 +114,6 @@ public class TestNNWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         nnCombobox.setConverter(converter);
-        nnCombobox.setItems(nnList);
         nnCombobox.getSelectionModel().selectedItemProperty().
                 addListener((observable, oldValue, newValue) -> {
                     setChosenNetwork(newValue);
