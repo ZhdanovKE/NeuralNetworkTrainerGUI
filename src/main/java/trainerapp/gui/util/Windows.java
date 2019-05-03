@@ -80,12 +80,14 @@ public class Windows {
     }
     
     public static void showViewNetworkWindow(Window parent, 
+            NamedObjectRepository<NeuralNetwork> nnRepository,
             NeuralNetwork selectedNN) {
         ModalWindow window = new ModalWindow("/fxml/ViewNNWindow.fxml", 
                 "View Neural Network", parent);
 
         ViewNNWindowController controller = 
                 (ViewNNWindowController)window.getController();
+        controller.setNetworkRepository(nnRepository);
         controller.setNetwork(selectedNN);
         window.show();   
     }
