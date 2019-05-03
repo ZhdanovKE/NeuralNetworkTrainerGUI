@@ -1,5 +1,8 @@
 package trainerapp.gui.repository;
 
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 
@@ -9,10 +12,13 @@ import javafx.collections.ObservableList;
  * @author Konstantin Zhdanov
  */
 public class SamplesRepository<T extends Number> {
+    private final List<String> header;
+    
     private final ObservableList<ObservableList<T>> items;
     
     public SamplesRepository() {
         items = FXCollections.observableArrayList();
+        header = new LinkedList<>();
     }
     
     public void add(ObservableList<T> sample) {
@@ -22,8 +28,27 @@ public class SamplesRepository<T extends Number> {
         items.add(sample);
     }
     
-    public boolean remove(int idx) {
-        return items.remove(idx) != null;
+    public void remove(int idx) {
+        items.remove(idx);
+    }
+    
+    public void setHeader(List<String> header) {
+        this.header.addAll(header);
+    }
+    
+    public List<String> getHeader() {
+        if (header.isEmpty() && !items.isEmpty()) {
+            createDefaultHeader();
+        }
+        return Collections.unmodifiableList(header);
+    }
+    
+    private void createDefaultHeader() {
+        header.clear();
+        int sampleSize = sampleSize();
+        for (int sampleVar = 0; sampleVar < sampleSize; sampleVar++) {
+            header.add(String.format("Var %d", sampleVar + 1));
+        }
     }
     
     public ObservableList<T> getSample(int idx) {
