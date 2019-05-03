@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="452.0" prefWidth="575.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="trainerapp.gui.controller.ViewNNTabController">
+   <children>
+      <TableView fx:id="biasesTableView" layoutX="80.0" layoutY="234.0" prefHeight="90.0" prefWidth="488.0" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="7.0" />
+      <Label fx:id="curLayerBiasesLabel" layoutX="117.0" layoutY="326.0" text="Layer 1's biases" AnchorPane.bottomAnchor="105.0" />
+      <Label fx:id="prevLayerNeuronLabel" layoutX="11.0" layoutY="67.0" prefHeight="90.0" prefWidth="60.0" text="Input layer's neurons" wrapText="true" />
+      <Label fx:id="curLayerNeuronLabel" layoutX="110.0" layoutY="14.0" text="Layer 1's neurons" />
+      <TableView fx:id="weightsTableView" layoutX="80.0" layoutY="49.0" prefHeight="126.0" prefWidth="488.0" AnchorPane.bottomAnchor="153.0" AnchorPane.leftAnchor="80.0" AnchorPane.rightAnchor="7.0" AnchorPane.topAnchor="49.0" />
+      <Separator layoutY="181.0" prefHeight="21.0" prefWidth="600.0" AnchorPane.bottomAnchor="126.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+   </children>
+</AnchorPane>
