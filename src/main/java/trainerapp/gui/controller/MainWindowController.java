@@ -246,7 +246,8 @@ public class MainWindowController implements Initializable {
         try {
             Window thisWindow = ((Node)event.getSource()).getScene().getWindow();
             
-            Windows.showViewNetworkWindow(thisWindow, selectedNN);
+            Windows.showViewNetworkWindow(thisWindow, nnRepository, 
+                    selectedNN);
         } 
         catch (IllegalArgumentException e) {
             reportMessage("Exception: " + e.toString());
