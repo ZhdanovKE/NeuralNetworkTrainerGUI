@@ -40,6 +40,9 @@ public class MainWindowController implements Initializable {
     private Button viewNNButton;
     
     @FXML
+    private Button viewSamplesButton;
+    
+    @FXML
     private TextArea statusMessagesArea;
     
     @FXML
@@ -64,6 +67,29 @@ public class MainWindowController implements Initializable {
             Windows.showLoadSamplesWindow(thisWindow, samplesRepoRepository);
             
             focusSamplesRepoIfNecessary();
+        }
+        catch (IllegalArgumentException e) {
+            reportMessage("Exception: " + e.toString());
+        }
+    }
+    
+    @FXML
+    private void handleViewSamplesButtonAction(ActionEvent event) {
+        if (samplesRepoRepository.isEmpty()) {
+            reportMessage("First load samples");
+            return;
+        }
+        SamplesRepository<Double> selectedRepo = samplesListView.getSelectionModel().
+                getSelectedItem();
+        if (selectedRepo == null) {
+            reportMessage("First select samples");
+            return;
+        }
+        try {
+            Window thisWindow = ((Node)event.getSource()).getScene().getWindow();
+
+            Windows.showViewSamplesWindow(thisWindow, samplesRepoRepository, 
+                    selectedRepo);
         }
         catch (IllegalArgumentException e) {
             reportMessage("Exception: " + e.toString());
@@ -278,5 +304,7 @@ public class MainWindowController implements Initializable {
         testNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         saveNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         viewNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
+        
+        viewSamplesButton.disableProperty().bind(Bindings.isEmpty(samplesListView.getItems()));
     }
 }
