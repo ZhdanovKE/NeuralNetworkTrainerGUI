@@ -88,11 +88,11 @@ public class TrainNNWindowController implements Initializable {
     private final int maxNumPoints = 30;
     
     private NamedObjectRepository<NeuralNetwork> nnRepository;
-    private final WritableValue<NeuralNetwork> chosenNetwork;
+    private NeuralNetwork chosenNetwork;
     private final SimpleBooleanProperty networkChosen;
     
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
-    private final WritableValue<SamplesRepository<Double>> chosenSamplesRepo;
+    private SamplesRepository<Double> chosenSamplesRepo;
     private final SimpleBooleanProperty samplesRepoChosen;
     
     private final SimpleBooleanProperty trainingCanStart;
@@ -137,10 +137,6 @@ public class TrainNNWindowController implements Initializable {
     public TrainNNWindowController() {
         
         performanceEpochList = new ArrayList<>();
-        
-        chosenNetwork = new SimpleObjectProperty<>(null);
-        
-        chosenSamplesRepo = new SimpleObjectProperty<>(null);
         
         networkChosen = new SimpleBooleanProperty(false);
         
@@ -194,11 +190,11 @@ public class TrainNNWindowController implements Initializable {
 
     public void selectSamplesRepo(SamplesRepository<Double> selectedSamplesRepo) {
         // if selected before Network, discard change
-        if (chosenNetwork.getValue() == null) {
+        if (chosenNetwork == null) {
             return;
         }
         // if network has been selected, and this repo isn't compatible, discard
-        if (selectedSamplesRepo.sampleSize() != getRequiredSampleSize(chosenNetwork.getValue())) {
+        if (selectedSamplesRepo.sampleSize() != getRequiredSampleSize(chosenNetwork)) {
             return;
         }
         samplesComboBox.getSelectionModel().select(selectedSamplesRepo);
@@ -221,7 +217,7 @@ public class TrainNNWindowController implements Initializable {
         }
         else {
             clearTrainingInfo();
-            NeuralNetwork network = chosenNetwork.getValue();
+            NeuralNetwork network = chosenNetwork;
             int nEpoch;
             try {
                 nEpoch = Integer.parseInt(nEpochsField.getText());
@@ -245,7 +241,7 @@ public class TrainNNWindowController implements Initializable {
             }
             try {
                 trainerFacade.startTraining(nEpoch, performanceGoal, 
-                        network, chosenSamplesRepo.getValue());
+                        network, chosenSamplesRepo);
             }
             catch(TrainerParameterException e) {
                 switch(e.getSource()) {
@@ -370,7 +366,7 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private void setChosenNetwork(NeuralNetwork chosenNN) {
-        chosenNetwork.setValue(chosenNN);
+        chosenNetwork = chosenNN;
         
         setNetworkHasBeenSaved(false);
         setNetworkHasBeenTrained(false);
@@ -391,7 +387,7 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private void setChosenSamplesRepo(SamplesRepository<Double> samplesRepo) {
-        chosenSamplesRepo.setValue(samplesRepo);
+        chosenSamplesRepo = samplesRepo;
         
         clearTrainingInfo();
         if (trainerFacade.getTrainingActive()) {
@@ -404,7 +400,7 @@ public class TrainNNWindowController implements Initializable {
     } 
     
     private void updateValidSamplesReposList() {
-        final int requiredSampleSize = getRequiredSampleSize(chosenNetwork.getValue());
+        final int requiredSampleSize = getRequiredSampleSize(chosenNetwork);
         ObservableList<SamplesRepository<Double>> validSubList = 
                 FXCollections.observableArrayList();
 
