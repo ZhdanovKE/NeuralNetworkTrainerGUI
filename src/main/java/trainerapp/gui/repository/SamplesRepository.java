@@ -28,8 +28,8 @@ public class SamplesRepository<T extends Number> {
         items.add(sample);
     }
     
-    public boolean remove(int idx) {
-        return items.remove(idx) != null;
+    public void remove(int idx) {
+        items.remove(idx);
     }
     
     public void setHeader(List<String> header) {
