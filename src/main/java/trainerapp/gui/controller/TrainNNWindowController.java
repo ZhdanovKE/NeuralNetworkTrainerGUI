@@ -97,6 +97,9 @@ public class TrainNNWindowController implements Initializable {
     
     private final SimpleBooleanProperty trainingCanStart;
     
+    // if the chosen network has been trained
+    private final SimpleBooleanProperty networkHasBeenTrained;
+    
     private final SimpleBooleanProperty networkHasBeenSaved;
     
     private static class NeuralNetworkStringConverter extends StringConverter<NeuralNetwork> {
@@ -147,18 +150,22 @@ public class TrainNNWindowController implements Initializable {
         
         networkHasBeenSaved = new SimpleBooleanProperty(false);
         
+        networkHasBeenTrained = new SimpleBooleanProperty(false);
+        
         trainerFacade = new NetworkTrainerGuiFacade();
         trainerFacade.setOnTrainingComplete((t) -> {
             trainingProgressBar.setProgress(1.0);
             setFinalPerformance(t.getPerformance());
             setUpPerformanceChart();
             setNetworkHasBeenSaved(false);
+            setNetworkHasBeenTrained(true);
         });
         trainerFacade.setOnTrainingCanceled((t) -> {
             trainingProgressBar.setProgress(0);
             setFinalPerformance(t.getPerformance());
             setUpPerformanceChart();
             setNetworkHasBeenSaved(false);
+            setNetworkHasBeenTrained(true);
         });
         trainerFacade.setOnTrainingEpochComplete((t) -> {
             double progress = ((double)t.getEpoch()) / trainerFacade.lastMaxEpoch();
@@ -310,6 +317,10 @@ public class TrainNNWindowController implements Initializable {
         networkHasBeenSaved.setValue(value);
     }
     
+    private void setNetworkHasBeenTrained(boolean value) {
+        networkHasBeenTrained.set(value);
+    }
+    
     private void setFinalPerformance(double performance) {
         trainedPerformanceLabel.setText(String.valueOf(performance));
     }
@@ -362,6 +373,7 @@ public class TrainNNWindowController implements Initializable {
         chosenNetwork.setValue(chosenNN);
         
         setNetworkHasBeenSaved(false);
+        setNetworkHasBeenTrained(false);
         
         nSamplesVarsLabel.setText(String.format(" (%d vars)",
                 getRequiredSampleSize(chosenNN)));
@@ -442,7 +454,8 @@ public class TrainNNWindowController implements Initializable {
         
         saveButton.disableProperty().bind(
                 trainerFacade.trainingActiveProperty().or(
-                        networkHasBeenSaved.or(trainingCanStart.not())));
+                        networkHasBeenSaved.or(trainingCanStart.not()).
+                                or(networkHasBeenTrained.not())));
         saveCloseButton.disableProperty().bind(saveButton.disableProperty());
         startStopTrainButton.disableProperty().bind(trainingCanStart.not());
         addSampleButton.disableProperty().bind(trainerFacade.trainingActiveProperty());
