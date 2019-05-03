@@ -27,6 +27,6 @@
       <Label layoutX="14.0" layoutY="14.0" text="Networks:" />
       <ListView fx:id="samplesListView" editable="true" layoutX="483.0" layoutY="44.0" prefHeight="315.0" prefWidth="200.0" />
       <Label layoutX="483.0" layoutY="14.0" text="Samples:" />
-      <Button fx:id="viewNNButton" layoutX="223.0" layoutY="328.0" mnemonicParsing="false" onAction="#handleViewNNButtonAction" text="View Neural Network" />
+      <Button fx:id="viewNNButton" layoutX="223.0" layoutY="328.0" mnemonicParsing="false" onAction="#handleViewNNButtonAction" text="View Neural Network..." />
     </children>
 </AnchorPane>
