@@ -152,12 +152,13 @@ public class TrainNNWindowController implements Initializable {
             trainingProgressBar.setProgress(1.0);
             setFinalPerformance(t.getPerformance());
             setUpPerformanceChart();
+            setNetworkHasBeenSaved(false);
         });
         trainerFacade.setOnTrainingCanceled((t) -> {
             trainingProgressBar.setProgress(0);
             setFinalPerformance(t.getPerformance());
             setUpPerformanceChart();
-            
+            setNetworkHasBeenSaved(false);
         });
         trainerFacade.setOnTrainingEpochComplete((t) -> {
             double progress = ((double)t.getEpoch()) / trainerFacade.lastMaxEpoch();
