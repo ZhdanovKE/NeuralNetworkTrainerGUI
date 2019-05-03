@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<AnchorPane id="AnchorPane" prefHeight="484.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8" fx:controller="trainerapp.gui.controller.ViewSamplesWindowController">
+   <children>
+      <TableView fx:id="samplesTableView" editable="true" layoutX="12.0" layoutY="84.0" prefHeight="348.0" prefWidth="577.0" />
+      <Button layoutX="524.0" layoutY="446.0" mnemonicParsing="false" onAction="#handleCloseButtonHandler" text="Close" />
+      <Label layoutX="14.0" layoutY="44.0" text="Samples:" />
+      <ComboBox fx:id="samplesComboBox" layoutX="86.0" layoutY="39.0" prefHeight="31.0" prefWidth="267.0" promptText="Choose..." />
+   </children>
+</AnchorPane>
