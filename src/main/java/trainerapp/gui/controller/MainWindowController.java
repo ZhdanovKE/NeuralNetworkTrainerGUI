@@ -37,6 +37,9 @@ public class MainWindowController implements Initializable {
     private Button testNNButton;
     
     @FXML
+    private Button viewNNButton;
+    
+    @FXML
     private TextArea statusMessagesArea;
     
     @FXML
@@ -232,6 +235,25 @@ public class MainWindowController implements Initializable {
         }
     }
     
+    @FXML 
+    private void handleViewNNButtonAction(ActionEvent event) {
+        NeuralNetwork selectedNN = networksListView.getSelectionModel().
+                getSelectedItem();
+        if (selectedNN == null) {
+            reportMessage("First select a neural network");
+            return;
+        }
+        try {
+            Window thisWindow = ((Node)event.getSource()).getScene().getWindow();
+            
+            Windows.showViewNetworkWindow(thisWindow, nnRepository, 
+                    selectedNN);
+        } 
+        catch (IllegalArgumentException e) {
+            reportMessage("Exception: " + e.toString());
+        }
+    }
+    
     private void reportMessage(String msg) {
         statusMessagesArea.appendText(msg);
         statusMessagesArea.appendText("\n");
@@ -255,5 +277,6 @@ public class MainWindowController implements Initializable {
         trainNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         testNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         saveNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
+        viewNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
     }
 }

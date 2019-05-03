@@ -9,6 +9,7 @@ import trainerapp.gui.repository.SamplesRepository;
 import neuralnetwork.NeuralNetwork;
 import javafx.stage.Window;
 import trainerapp.gui.ModalWindow;
+import trainerapp.gui.controller.ViewNNWindowController;
 
 /**
  * Utility class for creating and showing different modal windows related
@@ -75,6 +76,19 @@ public class Windows {
                 (TestNNWindowController)window.getController();
         controller.setNetworkRepository(nnRepository);
         controller.selectNetwork(selectedNN);
+        window.show();   
+    }
+    
+    public static void showViewNetworkWindow(Window parent, 
+            NamedObjectRepository<NeuralNetwork> nnRepository,
+            NeuralNetwork selectedNN) {
+        ModalWindow window = new ModalWindow("/fxml/ViewNNWindow.fxml", 
+                "View Neural Network", parent);
+
+        ViewNNWindowController controller = 
+                (ViewNNWindowController)window.getController();
+        controller.setNetworkRepository(nnRepository);
+        controller.setNetwork(selectedNN);
         window.show();   
     }
 }
