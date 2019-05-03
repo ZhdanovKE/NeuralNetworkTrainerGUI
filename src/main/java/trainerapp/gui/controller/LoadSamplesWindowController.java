@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
@@ -57,6 +59,8 @@ public class LoadSamplesWindowController implements Initializable {
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
 
     private SamplesRepository<Double> samples;
+    
+    private List<String> samplesHeader;
             
     private void clearLoadedSamples() {
         samplesTableViewFacade.clear();
@@ -204,6 +208,8 @@ public class LoadSamplesWindowController implements Initializable {
                     headerTitles = createDefaultHeaderTitles(sample.size());
                     samples.add(sample);
                 }
+                samplesHeader = Arrays.asList(headerTitles);
+                samples.setHeader(samplesHeader);
                 createHeaderColumns(headerTitles);
                 loadSamples(bufReader);
             }
