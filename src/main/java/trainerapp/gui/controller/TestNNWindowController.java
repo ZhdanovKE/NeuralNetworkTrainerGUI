@@ -7,8 +7,6 @@ import neuralnetwork.train.NeuralNetworkEvaluator;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.WritableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,18 +40,15 @@ public class TestNNWindowController implements Initializable {
     @FXML
     private TableView<ObservableList<Double>> inputTableView;
     private NumberTableViewFacade<Double> inputTableViewFacade;
-    
-    private final ObservableList<NeuralNetwork> nnList;
-    
+
     private NamedObjectRepository<NeuralNetwork> nnRepository;
     
-    private final WritableValue<NeuralNetwork> chosenNetwork;
+    private NeuralNetwork chosenNetwork;
     
     private NeuralNetworkEvaluator nnEvaluator;
     
     public TestNNWindowController() {
-        chosenNetwork = new SimpleObjectProperty<>(null);
-        nnList = FXCollections.observableArrayList();
+        
     }
 
     private void closeWindow(ActionEvent event) {
@@ -68,7 +63,7 @@ public class TestNNWindowController implements Initializable {
     
     @FXML
     void handleEvaluateButtonAction(ActionEvent event) {
-        if (chosenNetwork.getValue() == null) {
+        if (chosenNetwork == null) {
             return;
         }
         for (int rowIdx = 0; rowIdx < inputTableViewFacade.getItems().size(); rowIdx++) {
@@ -82,7 +77,7 @@ public class TestNNWindowController implements Initializable {
 
     @FXML
     void handleAddInputButtonAction(ActionEvent event) {
-        if (chosenNetwork.getValue() == null) {
+        if (chosenNetwork == null) {
             return;
         }
         addRow();
@@ -91,7 +86,7 @@ public class TestNNWindowController implements Initializable {
 
     @FXML
     void handleRemoveInputButtonAction(ActionEvent event) {
-        if (chosenNetwork.getValue() == null) {
+        if (chosenNetwork == null) {
             return;
         }
         removeLastRow();
@@ -108,10 +103,7 @@ public class TestNNWindowController implements Initializable {
     }
     
     private void updateNetworkList() {
-        nnList.clear();
-        nnRepository.getNames().forEach((name) -> {
-            nnList.add(nnRepository.get(name));
-        });
+        nnCombobox.setItems(nnRepository.getObjectsObservableList());
     }
     
     /**
@@ -120,7 +112,6 @@ public class TestNNWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         nnCombobox.setConverter(converter);
-        nnCombobox.setItems(nnList);
         nnCombobox.getSelectionModel().selectedItemProperty().
                 addListener((observable, oldValue, newValue) -> {
                     setChosenNetwork(newValue);
@@ -135,7 +126,7 @@ public class TestNNWindowController implements Initializable {
     private void setChosenNetwork(NeuralNetwork nn) {
         evaluateButton.setDisable(true);
         
-        chosenNetwork.setValue(nn);
+        chosenNetwork = nn;
         nnEvaluator = new NeuralNetworkEvaluator(nn);
         
         inputTableViewFacade.clear();
