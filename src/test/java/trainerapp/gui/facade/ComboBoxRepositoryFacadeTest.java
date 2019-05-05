@@ -48,7 +48,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSetRepository_NullRepository_Throw() {
         System.out.println("setRepository");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         instance.setRepository(null);
         
         fail("The test case must throw");
@@ -58,7 +58,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSetRepository_CorrectRepository_ComboBoxItemsReturnSameCollection() {
         System.out.println("setRepository");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -73,7 +73,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSetRepository_CorrectRepository_ComboBoxValueNull() {
         System.out.println("setRepository");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -91,7 +91,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSelect_ExistingObject_ComboboxValueReturnSameObject() {
         System.out.println("select");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -110,7 +110,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSelect_RepositoryNotSet_Throw() {
         System.out.println("select");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
 
         Object item = "Any object";
         instance.select(item);
@@ -122,7 +122,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSelect_NullObject_Throw() {
         System.out.println("select");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -139,7 +139,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSelect_NonExistingObject_Throw() {
         System.out.println("select");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -159,7 +159,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testGetSelectedItem_NonSelected_ReturnNull() {
         System.out.println("getSelectedItem");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -174,7 +174,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testGetSelectedItem_ObjectWasSelected_ReturnSameObject() {
         System.out.println("getSelectedItem");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -195,7 +195,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSetOnItemSelected_NullArgument_Throw() {
         System.out.println("setOnItemSelected");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
          
         instance.setOnItemSelected(null);
         
@@ -206,7 +206,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSetOnItemSelected_SelectInvoked_HandlerInvokedWithSelectedObject() {
         System.out.println("setOnItemSelected");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -226,7 +226,7 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSetOnItemSelected_SelectAlreadySelected_HandlerNotInvoked() {
         System.out.println("setOnItemSelected");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
@@ -248,13 +248,13 @@ public class ComboBoxRepositoryFacadeTest {
     public void testSetOnItemSelected_SelectNonExistingObjectInvoked_HandlerNotInvoked() {
         System.out.println("setOnItemSelected");
         ComboBoxRepositoryFacade instance = new ComboBoxRepositoryFacade(
-                comboBox, converter);
+                comboBox);
         NamedObjectRepository<Object> repo = new NamedObjectRepository<>();
         repo.add("Object 1", "Object 1");
         repo.add("Object 2", "Object 2");
         repo.add("Object 3", "Object 3");
         instance.setRepository(repo);
-        
+
         Consumer<Object> handler = Mockito.mock(Consumer.class);
         instance.setOnItemSelected(handler);
         try {
