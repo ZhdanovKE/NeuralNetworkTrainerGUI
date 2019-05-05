@@ -34,6 +34,9 @@ public class MainWindowController implements Initializable {
     private Button saveNNButton;
     
     @FXML
+    private Button removeNNButton;
+    
+    @FXML
     private Button testNNButton;
     
     @FXML
@@ -216,6 +219,17 @@ public class MainWindowController implements Initializable {
         }
     }
     
+    @FXML
+    private void handleRemoveNNButtonAction(ActionEvent event) {
+        NeuralNetwork selectedNN = networksListView.getSelectionModel().
+                getSelectedItem();
+        if (selectedNN == null) {
+            reportMessage("First select a neural network");
+            return;
+        }
+        nnRepository.remove(nnRepository.getNameForObject(selectedNN));
+    }
+    
     private void addNetworkToList(NeuralNetwork nn, String name) {
         if (nnRepository.containsName(name)) {
             name = name + UNIQUE_SUFFIX;
@@ -304,6 +318,7 @@ public class MainWindowController implements Initializable {
         testNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         saveNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         viewNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
+        removeNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         
         viewSamplesButton.disableProperty().bind(Bindings.isEmpty(samplesListView.getItems()));
     }
