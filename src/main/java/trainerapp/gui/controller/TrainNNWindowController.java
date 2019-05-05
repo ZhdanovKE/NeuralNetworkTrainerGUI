@@ -13,8 +13,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.property.SimpleObjectProperty;
-import javafx.beans.value.WritableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -32,6 +30,7 @@ import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
 import trainerapp.gui.facade.ComboBoxRepositoryFacade;
+import trainerapp.gui.repository.FilteredNamedObjectRepository;
 
 /**
  * Train Neural Network Window Controller class
@@ -96,6 +95,8 @@ public class TrainNNWindowController implements Initializable {
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
     private SamplesRepository<Double> chosenSamplesRepo;
     private final SimpleBooleanProperty samplesRepoChosen;
+    private FilteredNamedObjectRepository<SamplesRepository<Double>>
+            samplesRepoRepositoryFiltered;
     
     private final SimpleBooleanProperty trainingCanStart;
     
@@ -391,15 +392,12 @@ public class TrainNNWindowController implements Initializable {
     private void updateValidSamplesReposList() {
         final int requiredSampleSize = getRequiredSampleSize(
                 nnComboBoxFacade.getSelectedItem());
-        ObservableList<SamplesRepository<Double>> validSubList = 
-                FXCollections.observableArrayList();
-
-        samplesRepoRepository.getNames().stream().
-                map(samplesRepoRepository::get).
-                filter((repo) -> (repo.sampleSize() == requiredSampleSize)).
-                forEachOrdered(validSubList::add);
         
-        samplesComboBox.setItems(validSubList);
+        samplesRepoRepositoryFiltered = new FilteredNamedObjectRepository<>(
+            samplesRepoRepository, t -> t.sampleSize() == requiredSampleSize);
+
+        samplesComboBox.setItems(samplesRepoRepositoryFiltered.
+                getObjectsObservableList());
         
     }
     
