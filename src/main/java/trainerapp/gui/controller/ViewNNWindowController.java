@@ -49,7 +49,6 @@ public class ViewNNWindowController implements Initializable {
     }
     
     private void setChosenNetwork(NeuralNetwork network) {
-//        this.nn = network;
         updateTabs();
     }
     
