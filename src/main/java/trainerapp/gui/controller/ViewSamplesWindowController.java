@@ -13,7 +13,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
+import trainerapp.gui.facade.ComboBoxRepositoryFacade;
 import trainerapp.gui.repository.NamedObjectRepository;
 import trainerapp.gui.repository.SamplesRepository;
 
@@ -29,43 +29,23 @@ public class ViewSamplesWindowController implements Initializable {
 
     @FXML
     private ComboBox<SamplesRepository<Double>> samplesComboBox;
+    private ComboBoxRepositoryFacade<SamplesRepository<Double>> samplesComboBoxFacade;
     
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
-    
-    private SamplesRepository<Double> chosenSamplesRepo;
-
-    private final StringConverter<SamplesRepository<Double>> samplesRepoConverter = 
-            new StringConverter<SamplesRepository<Double>>() {
-                
-        @Override
-        public String toString(SamplesRepository<Double> object) {
-            String name = String.format("%s (%d vars)", 
-                    samplesRepoRepository.getNameForObject(object),
-                    object.sampleSize());
-            return name;
-        }
-
-        @Override
-        public SamplesRepository<Double> fromString(String string) {
-            throw new UnsupportedOperationException("Not supported");
-        }
-        
-    };
     
     public void setSamplesRepository(NamedObjectRepository<SamplesRepository<Double>> repo) {
         if (repo == null) {
             throw new NullPointerException("Repository cannot be null");
         }
         this.samplesRepoRepository = repo;
-        samplesComboBox.setItems(this.samplesRepoRepository.getObjectsObservableList());
+        samplesComboBoxFacade.setRepository(repo);
     }
     
     public void selectSamples(SamplesRepository<Double> selectedSamplesRepo) {
-        samplesComboBox.getSelectionModel().select(selectedSamplesRepo);
+        samplesComboBoxFacade.select(selectedSamplesRepo);
     }
     
     private void setChosenRepo(SamplesRepository<Double> selectedSamplesRepo) {
-        chosenSamplesRepo = selectedSamplesRepo;
         updateSamplesTable();
     }
     
@@ -77,12 +57,13 @@ public class ViewSamplesWindowController implements Initializable {
         createSamplesTableColumns();
         
         // Load values
-        samplesTableView.getItems().addAll(chosenSamplesRepo.getAll());
+        samplesTableView.getItems().addAll(samplesComboBoxFacade.
+                getSelectedItem().getAll());
     }
     
     private void createSamplesTableColumns() {
-        int nColumns = chosenSamplesRepo.sampleSize();
-        List<String> header = chosenSamplesRepo.getHeader();
+        int nColumns = samplesComboBoxFacade.getSelectedItem().sampleSize();
+        List<String> header = samplesComboBoxFacade.getSelectedItem().getHeader();
         for (int columnNum = 0; columnNum < nColumns; columnNum++) {
             final int varIdx = columnNum;
             TableColumn<ObservableList<Double>, Double> column = 
@@ -109,11 +90,14 @@ public class ViewSamplesWindowController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        samplesComboBox.getSelectionModel().selectedItemProperty().
-                addListener((observable, oldValue, newValue) -> {
-                    setChosenRepo(newValue);
-        });
-        samplesComboBox.setConverter(samplesRepoConverter);
+        samplesComboBoxFacade = new ComboBoxRepositoryFacade<>(samplesComboBox,
+                (t) -> {
+                    String name = String.format("%s (%d vars)", 
+                            samplesRepoRepository.getNameForObject(t),
+                            t.sampleSize());
+                    return name;
+                });
+        samplesComboBoxFacade.setOnItemSelected(this::setChosenRepo);
     }    
     
 }
