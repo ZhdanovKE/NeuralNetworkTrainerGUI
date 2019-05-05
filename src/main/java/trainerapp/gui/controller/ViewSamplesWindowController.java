@@ -91,12 +91,8 @@ public class ViewSamplesWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         samplesComboBoxFacade = new ComboBoxRepositoryFacade<>(samplesComboBox,
-                (t) -> {
-                    String name = String.format("%s (%d vars)", 
-                            samplesRepoRepository.getNameForObject(t),
-                            t.sampleSize());
-                    return name;
-                });
+                (t, s) -> String.format("%s (%d vars)", 
+                            s, t.sampleSize()));
         samplesComboBoxFacade.setOnItemSelected(this::setChosenRepo);
     }    
     

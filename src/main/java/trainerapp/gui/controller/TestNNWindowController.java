@@ -113,7 +113,7 @@ public class TestNNWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         nnComboBoxFacade = new ComboBoxRepositoryFacade<>(nnCombobox, 
-                NeuralNetwork::toString);
+                (t, s) -> t.toString());
         nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
         
         inputTableViewFacade = new NumberTableViewFacade<>(inputTableView,

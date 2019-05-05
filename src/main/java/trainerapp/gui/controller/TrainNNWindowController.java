@@ -411,7 +411,7 @@ public class TrainNNWindowController implements Initializable {
 
         nnComboBox.disableProperty().bind(trainerFacade.trainingActiveProperty());
         nnComboBoxFacade  = new ComboBoxRepositoryFacade<>(nnComboBox,
-                NeuralNetwork::toString);
+                (t, s) -> t.toString());
         nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
         
         networkChosen.bind(nnComboBox.valueProperty().isNotNull());

@@ -108,7 +108,7 @@ public class ViewNNWindowController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
 
         selectedNNComboBoxFacade = new ComboBoxRepositoryFacade<>(selectedNNComboBox,
-                NeuralNetwork::toString);
+                (t, s) -> t.toString());
         selectedNNComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
     }
 }
