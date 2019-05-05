@@ -1,5 +1,6 @@
 package trainerapp.gui.facade;
 
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import javafx.scene.control.ComboBox;
@@ -21,29 +22,52 @@ public class ComboBoxRepositoryFacade<T> {
     private T selectedItem;
     
     private Consumer<T> onItemSelectedHandler = (t) -> {};
-    private final Function<T,String> stringConverter;
+    // Default converter
+    private Function<T,String> stringConverter = (t) -> {
+        return repo.getNameForObject(t);
+    };
+
+    private BiFunction<T,String,String> overridingConverter;
+    
+    /**
+     * Create the facade for the passed {@link comboBox} and use the 
+     * default conversion of objects 
+     * of type {@link T} to {@code String} to show the items in
+     * the {@link comboBox}. The default conversion is to use the 
+     * {@code NamedObjectRepository} to get the name of an object.
+     * @param comboBox A {@code ComboBox} that will be controlled.
+     * @throws NullPointerException if either {@link comboBox} is null.
+     */
+    public ComboBoxRepositoryFacade(ComboBox<T> comboBox) {
+        this(comboBox, (t, s) -> s);
+    }
 
     /**
      * Create the facade for the passed {@link comboBox} and use the 
-     * {@link stringConverter} to show the items of type {@code T} in
-     * the {@link comboBox}.
+     * {@link overridingConverter} to change the default conversion of objects 
+     * of type {@link T} to {@code String} to show the items in
+     * the {@link comboBox}. The default conversion is to use the 
+     * {@code NamedObjectRepository} to get the name of an object.
      * @param comboBox A {@code ComboBox} that will be controlled.
-     * @param stringConverter A {@code Function<T,String>} to be used to convert
+     * @param overridingConverter A {@code BiFunction<T,String,String>} to be 
+     * used to change the default conversion (second parameter) of element 
+     * {@code T} (first parameter) into {@code String} (third parameter).
      * items of type {@code T} to String to be showed in the {@link comboBox}.
-     * @throws NullPointerException if either {@link comboBox} or {@link stringConverter}
+     * @throws NullPointerException if either {@link comboBox} or {@link overridingConverter}
      * is null.
      */
     public ComboBoxRepositoryFacade(ComboBox<T> comboBox, 
-            Function<T,String> stringConverter) {
-        if (comboBox == null || stringConverter == null) {
+            BiFunction<T,String,String> overridingConverter) {
+        if (comboBox == null || overridingConverter == null) {
             throw new NullPointerException("Arguments cannot be null");
         }
         this.comboBox = comboBox;
-        this.stringConverter = stringConverter;
+        this.overridingConverter = overridingConverter;
         this.comboBox.setConverter(new StringConverter<T>() {
             @Override public String toString(T object) {
                 return ComboBoxRepositoryFacade.this.
-                        stringConverter.apply(object);
+                        overridingConverter.apply(object, 
+                                        stringConverter.apply(object));
             }
             @Override public T fromString(String string) {
                 throw new UnsupportedOperationException("Not supported.");
