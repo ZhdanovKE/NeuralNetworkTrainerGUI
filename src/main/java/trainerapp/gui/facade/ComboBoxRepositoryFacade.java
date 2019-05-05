@@ -51,7 +51,7 @@ public class ComboBoxRepositoryFacade<T> {
         });
         this.comboBox.getSelectionModel().selectedItemProperty().addListener(
                 (observable, oldValue, newValue) -> {
-                    onItemSelectedHandler.accept(newValue);
+                    ComboBoxRepositoryFacade.this.onItemSelected(newValue);
         });
     }
     
@@ -78,8 +78,19 @@ public class ComboBoxRepositoryFacade<T> {
     /**
      * Select the passed {@link item} in the underlying {@code ComboBox}.
      * @param item The item to be selected in the {@code ComboBox}. 
+     * @throws IllegalStateException if a non-null {@code NamedObjectRepository} 
+     * wasn't set with the {@code setRepository} method.
+     * @throws IllegalArgumentException if the {@link item} doesn't exist in
+     * the {@code NamedObjectRepository}.
+     * @throws NullPointerException if the {@link item} is null.
      */
     public void select(T item) {
+       if (repo == null) {
+           throw new IllegalStateException("Repository is not set");
+       }
+       if (!repo.containsObject(item)) {
+           throw new IllegalArgumentException("The passed item doesn't exist in the repository");
+       }
        comboBox.getSelectionModel().select(item);
     }
     
@@ -93,6 +104,7 @@ public class ComboBoxRepositoryFacade<T> {
     
     protected void onItemSelected(T newItem) {
          selectedItem = newItem;
+         onItemSelectedHandler.accept(newItem);
     }
     
     /**
