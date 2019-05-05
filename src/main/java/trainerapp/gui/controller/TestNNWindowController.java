@@ -17,8 +17,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
+import trainerapp.gui.facade.ComboBoxRepositoryFacade;
 
 /**
  * Test Neural Network Window Controller class
@@ -33,6 +33,7 @@ public class TestNNWindowController implements Initializable {
 
     @FXML
     private ComboBox<NeuralNetwork> nnCombobox;
+    private ComboBoxRepositoryFacade<NeuralNetwork> nnComboBoxFacade;
 
     @FXML
     private Button evaluateButton;
@@ -99,11 +100,11 @@ public class TestNNWindowController implements Initializable {
     }
     
     public void selectNetwork(NeuralNetwork selectedNN) {
-        nnCombobox.getSelectionModel().select(selectedNN);
+        nnComboBoxFacade.select(selectedNN);
     }
     
     private void updateNetworkList() {
-        nnCombobox.setItems(nnRepository.getObjectsObservableList());
+        nnComboBoxFacade.setRepository(nnRepository);
     }
     
     /**
@@ -111,11 +112,9 @@ public class TestNNWindowController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        nnCombobox.setConverter(converter);
-        nnCombobox.getSelectionModel().selectedItemProperty().
-                addListener((observable, oldValue, newValue) -> {
-                    setChosenNetwork(newValue);
-        });
+        nnComboBoxFacade = new ComboBoxRepositoryFacade<>(nnCombobox, 
+                (t, s) -> t.toString());
+        nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
         
         inputTableViewFacade = new NumberTableViewFacade<>(inputTableView,
             new DoubleStringConverter());
@@ -192,21 +191,4 @@ public class TestNNWindowController implements Initializable {
         }
         outputTableViewFacade.getItems().set(rowIdx, newRow);
     }
-    
-    private final NeuralNetworkConverter converter = new NeuralNetworkConverter();
-    
-    private static class NeuralNetworkConverter extends StringConverter<NeuralNetwork> {
-
-        @Override
-        public String toString(NeuralNetwork object) {
-            return object.toString();
-        }
-
-        @Override
-        public NeuralNetwork fromString(String string) {
-            throw new UnsupportedOperationException("Not supported.");
-        }
-        
-    }
-    
 }

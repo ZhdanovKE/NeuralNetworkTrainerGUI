@@ -66,6 +66,7 @@ public class NamedObjectRepository<T> {
     
     // O(1) time
     // null if not exist
+    // NullPointerException if name is null.
     public T get(String name) {
         return nameObjectMap.get(name);
     }
@@ -84,6 +85,11 @@ public class NamedObjectRepository<T> {
     // O(1) time
     public boolean containsName(String name) {
         return nameObjectMap.containsKey(name);
+    }
+    
+    // O(n) time
+    public boolean containsObject(T object) {
+        return getNameForObject(object) != null;
     }
     
     // O(n) time due to name removal from the names list

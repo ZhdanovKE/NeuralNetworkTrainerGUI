@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.mockito.Mockito;
 
 /**
- *
+ * Test cases for NamedObjectRepository class
  * @author Konstantin Zhdanov
  */
 public class NamedObjectRepositoryTest {
@@ -16,6 +16,53 @@ public class NamedObjectRepositoryTest {
     public NamedObjectRepositoryTest() {
     }
 
+    /**
+     * Test of containsObject method, of class NamedObjectRepository.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testContainsObject_NullObjectPassed_Throw() {
+        System.out.println("containsObject");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Object 1 Name", "Object 1");
+        instance.add("Object 2 Name", "Object 2");
+        instance.add("Object 3 Name", "Object 3");
+        Object object = null;
+
+        boolean actual = instance.containsObject(object);
+        
+        fail("The test case must throw");
+    }
+    
+    @Test
+    public void testContainsObject_NonExistingObjectPassed_ReturnFalse() {
+        System.out.println("containsObject");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Object 1 Name", "Object 1");
+        instance.add("Object 2 Name", "Object 2");
+        instance.add("Object 3 Name", "Object 3");
+        Object object = "Another object";
+        boolean expected = false;
+        
+        boolean actual = instance.containsObject(object);
+        
+        assertThat(actual, CoreMatchers.is(expected));
+    }
+    
+    @Test
+    public void testContainsObject_ExistingObjectPassed_ReturnTrue() {
+        System.out.println("containsObject");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Object 1 Name", "Object 1");
+        instance.add("Object 2 Name", "Object 2");
+        instance.add("Object 3 Name", "Object 3");
+        Object object = "Object 2";
+        boolean expected = true;
+        
+        boolean actual = instance.containsObject(object);
+        
+        assertThat(actual, CoreMatchers.is(expected));
+    }
+    
     /**
      * Test of rename method, of class NamedObjectRepository.
      */

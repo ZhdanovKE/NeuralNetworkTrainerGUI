@@ -9,7 +9,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- *
+ * Test cases for SamplesRepository class
  * @author Konstantin Zhdanov
  */
 public class SamplesRepositoryTest {
