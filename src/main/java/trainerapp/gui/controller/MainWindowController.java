@@ -46,6 +46,9 @@ public class MainWindowController implements Initializable {
     private Button viewSamplesButton;
     
     @FXML
+    private Button removeSamplesButton;
+    
+    @FXML
     private TextArea statusMessagesArea;
     
     @FXML
@@ -97,6 +100,18 @@ public class MainWindowController implements Initializable {
         catch (IllegalArgumentException e) {
             reportMessage("Exception: " + e.toString());
         }
+    }
+    
+    @FXML
+    private void handleRemoveSamplesButtonAction(ActionEvent event) {
+        SamplesRepository<Double> selectedRepo = samplesListView.getSelectionModel().
+                getSelectedItem();
+        if (selectedRepo == null) {
+            reportMessage("First select samples");
+            return;
+        }
+        samplesRepoRepository.remove(samplesRepoRepository.
+                getNameForObject(selectedRepo));
     }
     
     @FXML
@@ -321,5 +336,6 @@ public class MainWindowController implements Initializable {
         removeNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
         
         viewSamplesButton.disableProperty().bind(Bindings.isEmpty(samplesListView.getItems()));
+        removeSamplesButton.disableProperty().bind(Bindings.isEmpty(samplesListView.getItems()));
     }
 }

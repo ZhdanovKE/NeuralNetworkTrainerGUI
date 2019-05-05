@@ -30,5 +30,6 @@
       <Button fx:id="viewNNButton" layoutX="224.0" layoutY="284.0" mnemonicParsing="false" onAction="#handleViewNNButtonAction" text="View Neural Network..." />
       <Button fx:id="viewSamplesButton" layoutX="702.0" layoutY="91.0" mnemonicParsing="false" onAction="#handleViewSamplesButtonAction" text="View Samples..." />
       <Button fx:id="removeNNButton" layoutX="224.0" layoutY="359.0" mnemonicParsing="false" onAction="#handleRemoveNNButtonAction" text="Remove Neural Network" />
+      <Button fx:id="removeSamplesButton" layoutX="702.0" layoutY="359.0" mnemonicParsing="false" onAction="#handleRemoveSamplesButtonAction" text="Remove samples" />
     </children>
 </AnchorPane>
