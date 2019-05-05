@@ -28,7 +28,6 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Window;
-import javafx.util.StringConverter;
 import trainerapp.gui.facade.ComboBoxRepositoryFacade;
 import trainerapp.gui.repository.FilteredNamedObjectRepository;
 
@@ -93,10 +92,7 @@ public class TrainNNWindowController implements Initializable {
     private final SimpleBooleanProperty networkChosen;
     
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
-    private SamplesRepository<Double> chosenSamplesRepo;
     private final SimpleBooleanProperty samplesRepoChosen;
-    private FilteredNamedObjectRepository<SamplesRepository<Double>>
-            samplesRepoRepositoryFiltered;
     
     private final SimpleBooleanProperty trainingCanStart;
     
@@ -104,24 +100,6 @@ public class TrainNNWindowController implements Initializable {
     private final SimpleBooleanProperty networkHasBeenTrained;
     
     private final SimpleBooleanProperty networkHasBeenSaved;
-
-    private final StringConverter<SamplesRepository<Double>> samplesRepoConverter = 
-            new StringConverter<SamplesRepository<Double>>() {
-                
-        @Override
-        public String toString(SamplesRepository<Double> object) {
-            String name = String.format("%s (%d vars)", 
-                    samplesRepoRepository.getNameForObject(object),
-                    object.sampleSize());
-            return name;
-        }
-
-        @Override
-        public SamplesRepository<Double> fromString(String string) {
-            throw new UnsupportedOperationException("Not supported");
-        }
-        
-    };
     
     public TrainNNWindowController() {
         
@@ -188,7 +166,7 @@ public class TrainNNWindowController implements Initializable {
                 nnComboBoxFacade.getSelectedItem())) {
             return;
         }
-        samplesComboBox.getSelectionModel().select(selectedSamplesRepo);
+        samplesComboBoxFacade.select(selectedSamplesRepo);
     }
     
     @FXML
@@ -232,7 +210,7 @@ public class TrainNNWindowController implements Initializable {
             }
             try {
                 trainerFacade.startTraining(nEpoch, performanceGoal, 
-                        network, chosenSamplesRepo);
+                        network, samplesComboBoxFacade.getSelectedItem());
             }
             catch(TrainerParameterException e) {
                 switch(e.getSource()) {
@@ -357,7 +335,6 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private void setChosenNetwork(NeuralNetwork chosenNN) {
-
         setNetworkHasBeenSaved(false);
         setNetworkHasBeenTrained(false);
         
@@ -377,8 +354,6 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private void setChosenSamplesRepo(SamplesRepository<Double> samplesRepo) {
-        chosenSamplesRepo = samplesRepo;
-        
         clearTrainingInfo();
         if (trainerFacade.getTrainingActive()) {
             trainerFacade.stopTraining();
@@ -393,12 +368,12 @@ public class TrainNNWindowController implements Initializable {
         final int requiredSampleSize = getRequiredSampleSize(
                 nnComboBoxFacade.getSelectedItem());
         
-        samplesRepoRepositoryFiltered = new FilteredNamedObjectRepository<>(
-            samplesRepoRepository, t -> t.sampleSize() == requiredSampleSize);
+        FilteredNamedObjectRepository<SamplesRepository<Double>> 
+                samplesRepoRepositoryFiltered = new FilteredNamedObjectRepository<>(
+                    samplesRepoRepository, t -> 
+                            t.sampleSize() == requiredSampleSize);
 
-        samplesComboBox.setItems(samplesRepoRepositoryFiltered.
-                getObjectsObservableList());
-        
+        samplesComboBoxFacade.setRepository(samplesRepoRepositoryFiltered);       
     }
     
     /**
@@ -414,12 +389,10 @@ public class TrainNNWindowController implements Initializable {
         
         networkChosen.bind(nnComboBox.valueProperty().isNotNull());
         
-        samplesComboBox.getSelectionModel().selectedItemProperty().
-                addListener((observable, oldValue, newValue) -> {
-                    setChosenSamplesRepo(newValue);
-        });
-        samplesComboBox.setConverter(samplesRepoConverter);
         samplesComboBox.disableProperty().bind(trainerFacade.trainingActiveProperty());
+        samplesComboBoxFacade = new ComboBoxRepositoryFacade<>(samplesComboBox, 
+            (t,s) -> String.format("%s (%d vars)", s, t.sampleSize()));
+        samplesComboBoxFacade.setOnItemSelected(this::setChosenSamplesRepo);
         
         samplesRepoChosen.bind(samplesComboBox.valueProperty().isNotNull());
 
