@@ -17,7 +17,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import javafx.util.converter.DoubleStringConverter;
 import trainerapp.gui.facade.ComboBoxRepositoryFacade;
 
