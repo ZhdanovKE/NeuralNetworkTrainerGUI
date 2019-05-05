@@ -31,6 +31,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 import javafx.util.StringConverter;
+import trainerapp.gui.facade.ComboBoxRepositoryFacade;
 
 /**
  * Train Neural Network Window Controller class
@@ -62,9 +63,11 @@ public class TrainNNWindowController implements Initializable {
     
     @FXML
     private ComboBox<NeuralNetwork> nnComboBox;
+    private ComboBoxRepositoryFacade<NeuralNetwork> nnComboBoxFacade;
     
     @FXML
     private ComboBox<SamplesRepository<Double>> samplesComboBox;
+    private ComboBoxRepositoryFacade<SamplesRepository<Double>> samplesComboBoxFacade;
     
     @FXML
     private Button addSampleButton;
@@ -88,7 +91,6 @@ public class TrainNNWindowController implements Initializable {
     private final int maxNumPoints = 30;
     
     private NamedObjectRepository<NeuralNetwork> nnRepository;
-    private NeuralNetwork chosenNetwork;
     private final SimpleBooleanProperty networkChosen;
     
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
@@ -101,20 +103,6 @@ public class TrainNNWindowController implements Initializable {
     private final SimpleBooleanProperty networkHasBeenTrained;
     
     private final SimpleBooleanProperty networkHasBeenSaved;
-    
-    private static class NeuralNetworkStringConverter extends StringConverter<NeuralNetwork> {
-        @Override public String toString(NeuralNetwork object) {
-            return object.toString();
-        }
-
-        @Override public NeuralNetwork fromString(String string) {
-            throw new UnsupportedOperationException("Not supported");
-        }
-    }
-    
-    private final NeuralNetworkStringConverter neuralNetworkStringConverter = 
-            new NeuralNetworkStringConverter();
-    
 
     private final StringConverter<SamplesRepository<Double>> samplesRepoConverter = 
             new StringConverter<SamplesRepository<Double>>() {
@@ -170,14 +158,14 @@ public class TrainNNWindowController implements Initializable {
         });
         trainerFacade.setMaxNumberEpochCompleteEvents(maxNumPoints);
     }
-            
+    
     public void setNetworkRepository(NamedObjectRepository<NeuralNetwork> nnRepository) {
         this.nnRepository = nnRepository;
-        nnComboBox.setItems(nnRepository.getObjectsObservableList());
+        nnComboBoxFacade.setRepository(this.nnRepository);
     }
 
     public void selectNetwork(NeuralNetwork selectedNN) {
-        nnComboBox.getSelectionModel().select(selectedNN);
+        nnComboBoxFacade.select(selectedNN);
     }
     
     public void setSamplesRepository(NamedObjectRepository<SamplesRepository<Double>> samplesRepo) {
@@ -190,11 +178,13 @@ public class TrainNNWindowController implements Initializable {
 
     public void selectSamplesRepo(SamplesRepository<Double> selectedSamplesRepo) {
         // if selected before Network, discard change
-        if (chosenNetwork == null) {
+        if (    nnComboBoxFacade == null ||
+                nnComboBoxFacade.getSelectedItem() == null  ) {
             return;
         }
         // if network has been selected, and this repo isn't compatible, discard
-        if (selectedSamplesRepo.sampleSize() != getRequiredSampleSize(chosenNetwork)) {
+        if (selectedSamplesRepo.sampleSize() != getRequiredSampleSize(
+                nnComboBoxFacade.getSelectedItem())) {
             return;
         }
         samplesComboBox.getSelectionModel().select(selectedSamplesRepo);
@@ -217,7 +207,7 @@ public class TrainNNWindowController implements Initializable {
         }
         else {
             clearTrainingInfo();
-            NeuralNetwork network = chosenNetwork;
+            NeuralNetwork network = nnComboBoxFacade.getSelectedItem();
             int nEpoch;
             try {
                 nEpoch = Integer.parseInt(nEpochsField.getText());
@@ -366,8 +356,7 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private void setChosenNetwork(NeuralNetwork chosenNN) {
-        chosenNetwork = chosenNN;
-        
+
         setNetworkHasBeenSaved(false);
         setNetworkHasBeenTrained(false);
         
@@ -400,7 +389,8 @@ public class TrainNNWindowController implements Initializable {
     } 
     
     private void updateValidSamplesReposList() {
-        final int requiredSampleSize = getRequiredSampleSize(chosenNetwork);
+        final int requiredSampleSize = getRequiredSampleSize(
+                nnComboBoxFacade.getSelectedItem());
         ObservableList<SamplesRepository<Double>> validSubList = 
                 FXCollections.observableArrayList();
 
@@ -419,12 +409,10 @@ public class TrainNNWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
 
-        nnComboBox.getSelectionModel().selectedItemProperty().
-                addListener((observable, oldValue, newValue) -> {
-                    setChosenNetwork(newValue);
-        });
-        nnComboBox.setConverter(neuralNetworkStringConverter);
         nnComboBox.disableProperty().bind(trainerFacade.trainingActiveProperty());
+        nnComboBoxFacade  = new ComboBoxRepositoryFacade<>(nnComboBox,
+                NeuralNetwork::toString);
+        nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
         
         networkChosen.bind(nnComboBox.valueProperty().isNotNull());
         
