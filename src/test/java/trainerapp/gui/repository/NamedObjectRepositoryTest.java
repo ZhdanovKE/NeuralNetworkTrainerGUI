@@ -8,7 +8,7 @@ import static org.junit.Assert.*;
 import org.mockito.Mockito;
 
 /**
- *
+ * Test cases for NamedObjectRepository class
  * @author Konstantin Zhdanov
  */
 public class NamedObjectRepositoryTest {
