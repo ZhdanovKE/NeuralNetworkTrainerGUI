@@ -13,8 +13,8 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import neuralnetwork.NeuralNetwork;
+import trainerapp.gui.facade.ComboBoxRepositoryFacade;
 import trainerapp.gui.repository.NamedObjectRepository;
 
 /**
@@ -29,48 +29,33 @@ public class ViewNNWindowController implements Initializable {
     
     @FXML
     private ComboBox<NeuralNetwork> selectedNNComboBox;
+    private ComboBoxRepositoryFacade<NeuralNetwork> selectedNNComboBoxFacade;
 
     @FXML
     private Button closeButton;
     
     private NamedObjectRepository<NeuralNetwork> nnRepository;
     
-    private NeuralNetwork nn;
-    
-    private final NeuralNetworkConverter converter = new NeuralNetworkConverter();
-    
-    private static class NeuralNetworkConverter extends StringConverter<NeuralNetwork> {
-
-        @Override
-        public String toString(NeuralNetwork object) {
-            return object.toString();
-        }
-
-        @Override
-        public NeuralNetwork fromString(String string) {
-            throw new UnsupportedOperationException("Not supported.");
-        }
-    }
-    
     public void setNetworkRepository(NamedObjectRepository<NeuralNetwork> repo) {
         this.nnRepository = repo;
-        selectedNNComboBox.setItems(nnRepository.getObjectsObservableList());
+        selectedNNComboBoxFacade.setRepository(nnRepository);
     }
     
     public void setNetwork(NeuralNetwork nn) {
         if (nn == null) {
             throw new NullPointerException("Network cannot be null");
         }        
-        selectedNNComboBox.getSelectionModel().select(nn);
+        selectedNNComboBoxFacade.select(nn);
     }
     
     private void setChosenNetwork(NeuralNetwork network) {
-        this.nn = network;
+//        this.nn = network;
         updateTabs();
     }
     
     private void updateTabs() {
         tabPane.getTabs().clear();
+        NeuralNetwork nn = selectedNNComboBoxFacade.getSelectedItem();
         
         // Hidden layers
         for (int tabIdx = 0; tabIdx < nn.getNumberHiddenLayers(); tabIdx++) {
@@ -121,10 +106,9 @@ public class ViewNNWindowController implements Initializable {
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        selectedNNComboBox.setConverter(converter);
-        selectedNNComboBox.getSelectionModel().selectedItemProperty().
-                addListener((observable, oldValue, newValue) -> {
-                    setChosenNetwork(newValue);
-        });
+
+        selectedNNComboBoxFacade = new ComboBoxRepositoryFacade<>(selectedNNComboBox,
+                NeuralNetwork::toString);
+        selectedNNComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
     }
 }
