@@ -421,7 +421,19 @@ public class TrainNNWindowController implements Initializable {
             }
         });
         newNameFieldErrorFacade = new TextFieldErrorMessageFacade(newNameField);
+        
+        performanceGoalField.setOnAction((event) -> {
+            if (trainingCanStart.get() && !trainerFacade.trainingActiveProperty().get()) {
+                handleStartStopTrainingButtonAction(event);
+            }
+        });
         performanceGoalFieldErrorFacade = new TextFieldErrorMessageFacade(performanceGoalField);
+        
+        nEpochsField.setOnAction((event) -> {
+            if (trainingCanStart.get() && !trainerFacade.trainingActiveProperty().get()) {
+                handleStartStopTrainingButtonAction(event);
+            }
+        });
         nEpochsFieldErrorFacade = new TextFieldErrorMessageFacade(nEpochsField);
        
         performanceLineChart.getStylesheets().add(this.getClass().
