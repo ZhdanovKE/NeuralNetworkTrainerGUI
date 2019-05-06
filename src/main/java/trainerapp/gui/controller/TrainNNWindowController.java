@@ -415,6 +415,11 @@ public class TrainNNWindowController implements Initializable {
         startStopTrainButton.disableProperty().bind(trainingCanStart.not());
         addSampleButton.disableProperty().bind(trainerFacade.trainingActiveProperty());
         
+        newNameField.setOnAction((event) -> {
+            if (!saveButton.isDisable()) {
+                trySaveNetworkFromTrainer();
+            }
+        });
         newNameFieldErrorFacade = new TextFieldErrorMessageFacade(newNameField);
         performanceGoalFieldErrorFacade = new TextFieldErrorMessageFacade(performanceGoalField);
         nEpochsFieldErrorFacade = new TextFieldErrorMessageFacade(nEpochsField);
