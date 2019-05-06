@@ -31,19 +31,19 @@ public class NamedObjectRepository<T> {
     }
     
     // O(n) time due to removal if it already contains the name
-    // Replace if already contains the name
+    // Replace if already contains the name and preserve the order of items
     public void add(String name, T object) {
         if (name == null || object == null) {
             throw new NullPointerException("Arguments cannot be null");
         }
         T prev = nameObjectMap.put(name, object);
         if (prev != null) {
-            objects.remove(prev);
+            objects.set(objects.indexOf(prev), object);
         }
         else {
             names.add(name);
+            objects.add(object);
         }
-        objects.add(object);
     }
     
     // O(n) time
@@ -68,12 +68,18 @@ public class NamedObjectRepository<T> {
     // null if not exist
     // NullPointerException if name is null.
     public T get(String name) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
         return nameObjectMap.get(name);
     }
     
     // O(n) operation
     // null if not exist
     public String getNameForObject(T object) {
+        if (object == null) {
+            throw new NullPointerException("Object cannot be null");
+        }
         for (String name : getNames()) {
             if (object.equals(get(name))) {
                 return name;
@@ -84,6 +90,9 @@ public class NamedObjectRepository<T> {
     
     // O(1) time
     public boolean containsName(String name) {
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
         return nameObjectMap.containsKey(name);
     }
     
