@@ -2,6 +2,8 @@ package trainerapp.gui.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -28,6 +30,12 @@ public class ViewNNWindowController implements Initializable {
     private TabPane tabPane;
     
     @FXML
+    private Button saveAndCloseButton;
+
+    @FXML
+    private Button saveButton;
+    
+    @FXML
     private ComboBox<NeuralNetwork> selectedNNComboBox;
     private ComboBoxRepositoryFacade<NeuralNetwork> selectedNNComboBoxFacade;
 
@@ -35,6 +43,8 @@ public class ViewNNWindowController implements Initializable {
     private Button closeButton;
     
     private NamedObjectRepository<NeuralNetwork> nnRepository;
+    
+    private List<ViewNNTabController> tabControllers;
     
     public void setNetworkRepository(NamedObjectRepository<NeuralNetwork> repo) {
         this.nnRepository = repo;
@@ -54,6 +64,7 @@ public class ViewNNWindowController implements Initializable {
     
     private void updateTabs() {
         tabPane.getTabs().clear();
+        tabControllers.clear();
         NeuralNetwork nn = selectedNNComboBoxFacade.getSelectedItem();
         if (nn == null) {
             return;
@@ -86,6 +97,7 @@ public class ViewNNWindowController implements Initializable {
             ViewNNTabController tabController = (ViewNNTabController)tabLoader.
                     getController();
             tabController.setUp(nn, idx);
+            tabControllers.add(tabController);
         }
         catch(IOException e) {
             System.out.println("Exception: " + e.toString());
@@ -103,12 +115,23 @@ public class ViewNNWindowController implements Initializable {
         closeWindow(event);
     }
     
+    @FXML
+    void handleSaveButtonAction(ActionEvent event) {
+        tabControllers.forEach(ViewNNTabController::saveChanges);
+    }
+
+    @FXML
+    void handleSaveAndCloseButtonAction(ActionEvent event) {
+        handleSaveButtonAction(event);
+        handleCloseButtonAction(event);
+    }
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        tabControllers = new ArrayList<>();
         selectedNNComboBoxFacade = new ComboBoxRepositoryFacade<>(selectedNNComboBox,
                 (t, s) -> t.toString());
         selectedNNComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
