@@ -1,11 +1,17 @@
 package trainerapp.gui.repository;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mockito.Mockito;
+import org.mockito.exceptions.misusing.NullInsteadOfMockException;
 
 /**
  * Test cases for NamedObjectRepository class
@@ -66,7 +72,7 @@ public class NamedObjectRepositoryTest {
     /**
      * Test of rename method, of class NamedObjectRepository.
      */
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testRename_OldNameNull_Throw() {
         System.out.println("rename");
         String oldName = null;
@@ -299,6 +305,9 @@ public class NamedObjectRepositoryTest {
                 oldName, newName);
     }
     
+    /**
+     * Test of setOnNameChangeListener method, of class NamedObjectRepository.
+     */
     @Test
     public void testSetOnNameChangeListener_RenameCalled_ListenerCalled() {
         System.out.println("setOnNameChangeListener");
@@ -318,6 +327,26 @@ public class NamedObjectRepositoryTest {
     }
     
     @Test
+    public void testSetOnNameChangeListener_RenameSameNameCalled_ListenerNotCalled() {
+        System.out.println("setOnNameChangeListener");
+        String oldName = "Old name";
+        String newName = oldName;
+        Object object = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add(oldName, object);
+        NamedObjectRepository.NameChangeListener listener = Mockito.mock(
+            NamedObjectRepository.NameChangeListener.class);
+        
+        instance.setOnNameChangeListener(listener);
+        instance.rename(oldName, newName);
+        
+        Mockito.verifyZeroInteractions(listener);
+    }
+    
+    /**
+     * Test of removeOnNameChangeListener method, of class NamedObjectRepository.
+     */
+    @Test
     public void testRemoveOnNameChangeListener_RenameCalled_ListenerNotCalled() {
         System.out.println("removeOnNameChangeListener");
         String oldName = "Old name";
@@ -334,5 +363,558 @@ public class NamedObjectRepositoryTest {
         
         Mockito.verify(listener, Mockito.never()).nameChanged(Mockito.anyObject(), 
                 Mockito.anyString(), Mockito.anyString());
+    }
+
+    /**
+     * Test of add method, of class NamedObjectRepository.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testAdd_NullName_Throw() {
+        System.out.println("add");
+        String name = null;
+        Object object = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add(name, object);
+        
+        fail("The test case must throw");
+    }
+    
+    @Test(expected = NullPointerException.class)
+    public void testAdd_NullObject_Throw() {
+        System.out.println("add");
+        String name = "Name";
+        Object object = null;
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add(name, object);
+        
+        fail("The test case must throw");
+    }
+    
+    @Test
+    public void testAdd_ExistingName_GetReturnNewObject() {
+        System.out.println("add");
+        String name = "Name 1";
+        Object newObject = new Object();
+        Object oldObject = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", oldObject);
+        
+        instance.add(name, newObject);
+
+        Object actual = instance.get(name);
+        assertThat(actual, CoreMatchers.is(newObject));
+    }
+    
+    /**
+     * Test of remove method, of class NamedObjectRepository.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testRemove_NullName_Throw() {
+        System.out.println("remove");
+        String name = null;
+        NamedObjectRepository instance = new NamedObjectRepository();
+        
+        instance.remove(name);
+        
+        fail("The test case must throw");
+    }
+    
+    @Test
+    public void testRemove_NameNotExist_ReturnFalse() {
+        System.out.println("remove");
+        String name = "Non-existing name";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name", new Object());
+        boolean expResult = false;
+        
+        boolean result = instance.remove(name);
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testRemove_NameExist_ReturnTrue() {
+        System.out.println("remove");
+        String name = "Name";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name", new Object());
+        instance.add("Name 2", new Object());
+        boolean expResult = true;
+        
+        boolean result = instance.remove(name);
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testRemove_ExistingName_GetReturnNull() {
+        System.out.println("remove");
+        String name = "Name 1";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", new Object());
+        
+        instance.remove(name);
+        
+        Object actual = instance.get(name);
+        
+        assertThat(actual, CoreMatchers.nullValue());
+    }
+
+    /**
+     * Test of get method, of class NamedObjectRepository.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testGet_NullName_Throw() {
+        System.out.println("get");
+        String name = null;
+        NamedObjectRepository instance = new NamedObjectRepository();
+
+        instance.get(name);
+        
+        fail("The test case must throw");
+    }
+    
+    @Test
+    public void testGet_NonExistingName_ReturnNull() {
+        System.out.println("get");
+        String name = "Non-existing name";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name", new Object());
+
+        Object result = instance.get(name);
+        
+        assertThat(result, CoreMatchers.nullValue());
+    }
+    
+    @Test
+    public void testGet_ExistingName_ReturnObjectWithThatName() {
+        System.out.println("get");
+        String name = "Name 2";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", "Object 1");
+        instance.add("Name 2", "Object 2");
+        instance.add("Name 3", "Object 3");
+        
+        Object result = instance.get(name);
+        
+        assertThat(result, CoreMatchers.is("Object 2"));
+    }
+
+    /**
+     * Test of getNameForObject method, of class NamedObjectRepository.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testGetNameForObject_NullObject_Throw() {
+        System.out.println("getNameForObject");
+        Object object = null;
+        NamedObjectRepository instance = new NamedObjectRepository();
+        
+        instance.getNameForObject(object);
+        
+        fail("The test case must throw");
+    }
+    
+    @Test
+    public void testGetNameForObject_ExistingObject_ReturnName() {
+        System.out.println("getNameForObject");
+        Object object = "Object 2";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", "Object 1");
+        instance.add("Name 2", "Object 2");
+        instance.add("Name 3", "Object 3");
+        
+        String result = instance.getNameForObject(object);
+        
+        assertThat(result, CoreMatchers.is("Name 2"));
+    }
+    
+    @Test
+    public void testGetNameForObject_NonExistingObject_ReturnNull() {
+        System.out.println("getNameForObject");
+        Object object = "Non-Existing Object";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name", "Object");
+        
+        String result = instance.getNameForObject(object);
+        
+        assertThat(result, CoreMatchers.nullValue());
+    }
+
+    /**
+     * Test of containsName method, of class NamedObjectRepository.
+     */
+    @Test(expected = NullPointerException.class)
+    public void testContainsName_NullName_Throw() {
+        System.out.println("containsName");
+        String name = null;
+        NamedObjectRepository instance = new NamedObjectRepository();
+        
+        instance.containsName(name);
+        
+        fail("The test case must throw");
+    }
+    
+    @Test
+    public void testContainsName_NonExistingName_ReturnFalse() {
+        System.out.println("containsName");
+        String name = "Non-Existing Name";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name", new Object());
+        boolean expResult = false;
+        
+        boolean result = instance.containsName(name);
+        
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testContainsName_ExistingName_ReturnTrue() {
+        System.out.println("containsName");
+        String name = "Name 2";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", new Object());
+        instance.add("Name 2", new Object());
+        instance.add("Name 3", new Object());
+        boolean expResult = true;
+        
+        boolean result = instance.containsName(name);
+        
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of size method, of class NamedObjectRepository.
+     */
+    @Test
+    public void testSize_EmptyRepository_ReturnZero() {
+        System.out.println("size");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        int expResult = 0;
+        int result = instance.size();
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testSize_AddNonExistingName_SizeIncreaseByOne() {
+        System.out.println("size");
+        String name = "Name New";
+        Object object = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", new Object());
+        int size = instance.size();
+        int expSize = size + 1;
+        instance.add(name, object);
+        
+        int actualSize = instance.size();
+        
+        assertThat(actualSize, CoreMatchers.is(expSize));
+    }
+    
+    @Test
+    public void testSize_AddExistingName_SizeStaySame() {
+        System.out.println("size");
+        String name = "Name 1";
+        Object object = new Object();
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", new Object());
+        int size = instance.size();
+        int expSize = size;
+        instance.add(name, object);
+        
+        int actualSize = instance.size();
+        
+        assertThat(actualSize, CoreMatchers.is(expSize));
+    }
+
+    @Test
+    public void testSize_RemoveExistingName_SizeDecreaseByOne() {
+        System.out.println("size");
+        String name = "Name 1";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", new Object());
+        int size = instance.size();
+        int expSize = size - 1;
+        instance.remove(name);
+        
+        int actualSize = instance.size();
+        
+        assertThat(actualSize, CoreMatchers.is(expSize));
+    }
+    
+    @Test
+    public void testSize_RemoveNonExistingName_SizeStaySame() {
+        System.out.println("size");
+        String name = "Name Non-Existing";
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name 1", new Object());
+        int size = instance.size();
+        int expSize = size;
+        instance.remove(name);
+        
+        int actualSize = instance.size();
+        
+        assertThat(actualSize, CoreMatchers.is(expSize));
+    }
+    
+    /**
+     * Test of isEmpty method, of class NamedObjectRepository.
+     */
+    @Test
+    public void testIsEmpty_EmptyRepository_ReturnTrue() {
+        System.out.println("isEmpty");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        boolean expResult = true;
+        boolean result = instance.isEmpty();
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testIsEmpty_AddFirstElement_ReturnFalse() {
+        System.out.println("isEmpty");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name", new Object());
+        boolean expResult = false;
+        boolean result = instance.isEmpty();
+        assertEquals(expResult, result);
+    }
+    
+    @Test
+    public void testIsEmpty_ReomveLastElement_ReturnTrue() {
+        System.out.println("isEmpty");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        instance.add("Name", new Object());
+        instance.remove("Name");
+        boolean expResult = true;
+        boolean result = instance.isEmpty();
+        assertEquals(expResult, result);
+    }
+
+    /**
+     * Test of getNames method, of class NamedObjectRepository.
+     */
+    @Test
+    public void testGetNames_EmptyRepository_ReturnEmptyList() {
+        System.out.println("getNames");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        Set<String> expResult = Collections.EMPTY_SET;
+        
+        Set<String> result = instance.getNames();
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetNames_NonEmptyRepository_ReturnCorrectList() {
+        System.out.println("getNames");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        Set<String> expResult = new HashSet<>();
+        expResult.add("Name 1");
+        expResult.add("Name 2");
+        expResult.add("Name 3");
+        expResult.stream().forEach(n -> instance.add(n, new Object()));
+        
+        Set<String> result = instance.getNames();
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetNames_RemoveExistingName_ListNotContainName() {
+        System.out.println("getNames");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        Set<String> expResult = new HashSet<>();
+        expResult.add("Name 1");
+        expResult.add("Name 3");
+        expResult.stream().forEach(n -> instance.add(n, new Object()));
+        instance.add("Name 2", new Object());
+        
+        instance.remove("Name 2");
+        
+        Set<String> result = instance.getNames();
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+
+    /**
+     * Test of getNamesObservableList method, of class NamedObjectRepository.
+     */
+    @Test
+    public void testGetNamesObservableList_EmptyRepository_ReturnEmptyList() {
+        System.out.println("getNamesObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList<String> expResult = FXCollections.observableArrayList();
+        
+        ObservableList<String> result = instance.getNamesObservableList();
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetNamesObservableList_NonEmptyRepository_ReturnCorrectList() {
+        System.out.println("getNamesObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList<String> expResult = FXCollections.observableArrayList();
+        expResult.add("Name 1");
+        expResult.add("Name 2");
+        expResult.add("Name 3");
+        expResult.stream().forEach(n -> instance.add(n, new Object()));
+        
+        ObservableList<String> result = instance.getNamesObservableList();
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetNamesObservableList_AddNonExistingName_ReturnedListContainNewName() {
+        System.out.println("getNamesObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList<String> expResult = FXCollections.observableArrayList();
+        expResult.add("Name 1");
+        expResult.add("Name 2");
+        expResult.add("Name 3");
+        expResult.stream().forEach(n -> instance.add(n, new Object()));
+        
+        ObservableList<String> result = instance.getNamesObservableList();
+        expResult.add("Name 4");
+        instance.add("Name 4", new Object());
+
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetNamesObservableList_Rename_ReturnedListContainNewNameAtOldPlace() {
+        System.out.println("getNamesObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList<String> expResult = FXCollections.observableArrayList();
+        expResult.add("Name 1");
+        expResult.add("Name 4");
+        expResult.add("Name 3");
+        instance.add("Name 1", new Object());
+        instance.add("Name 2", new Object());
+        instance.add("Name 3", new Object());;
+        
+        ObservableList<String> result = instance.getNamesObservableList();
+        instance.rename("Name 2", "Name 4");
+
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetNamesObservableList_RemoveExistingName_ReturnedListNotContainTheName() {
+        System.out.println("getNamesObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList<String> expResult = FXCollections.observableArrayList();
+        expResult.add("Name 1");
+        expResult.add("Name 3");
+        instance.add("Name 1", new Object());
+        instance.add("Name 2", new Object());
+        instance.add("Name 3", new Object());
+        ObservableList<String> result = instance.getNamesObservableList();
+        instance.remove("Name 2");
+
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+
+    /**
+     * Test of getObjectsObservableList method, of class NamedObjectRepository.
+     */
+    @Test
+    public void testGetObjectsObservableList_EmptyRepository_ReturnEmptyList() {
+        System.out.println("getObjectsObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList expResult = FXCollections.observableArrayList();
+        
+        ObservableList result = instance.getObjectsObservableList();
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetObjectsObservableList_NonEmptyRepository_ReturnCorrectList() {
+        System.out.println("getObjectsObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList expResult = FXCollections.observableArrayList();
+        expResult.add("Object 1");
+        expResult.add("Object 2");
+        expResult.add("Object 3");
+        instance.add("Name 1", "Object 1");
+        instance.add("Name 2", "Object 2");
+        instance.add("Name 3", "Object 3");
+        
+        ObservableList result = instance.getObjectsObservableList();
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetObjectsObservableList_AddNonExistingName_ReturnedListContainNewObject() {
+        System.out.println("getObjectsObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList expResult = FXCollections.observableArrayList();
+        expResult.add("Object 1");
+        expResult.add("Object 2");
+        expResult.add("Object 3");
+        expResult.add("Object 4");
+        instance.add("Name 1", "Object 1");
+        instance.add("Name 2", "Object 2");
+        instance.add("Name 3", "Object 3");
+        
+        ObservableList result = instance.getObjectsObservableList();
+        instance.add("Name 4", "Object 4");
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetObjectsObservableList_AddExistingName_ReturnedListContainNewObjectAtOldPlace() {
+        System.out.println("getObjectsObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList expResult = FXCollections.observableArrayList();
+        expResult.add("Object 1");
+        expResult.add("Object 4");
+        expResult.add("Object 3");
+        instance.add("Name 1", "Object 1");
+        instance.add("Name 2", "Object 2");
+        instance.add("Name 3", "Object 3");
+        
+        ObservableList result = instance.getObjectsObservableList();
+        instance.add("Name 2", "Object 4");
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetObjectsObservableList_Rename_ReturnedListNotChanged() {
+        System.out.println("getObjectsObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList expResult = FXCollections.observableArrayList();
+        expResult.add("Object 1");
+        expResult.add("Object 2");
+        expResult.add("Object 3");
+        instance.add("Name 1", "Object 1");
+        instance.add("Name 2", "Object 2");
+        instance.add("Name 3", "Object 3");
+        
+        ObservableList result = instance.getObjectsObservableList();
+        instance.rename("Name 2", "Name 4");
+        
+        assertThat(result, CoreMatchers.is(expResult));
+    }
+    
+    @Test
+    public void testGetObjectsObservableList_RemoveExistingName_ReturnedListNotContainObject() {
+        System.out.println("getObjectsObservableList");
+        NamedObjectRepository instance = new NamedObjectRepository();
+        ObservableList expResult = FXCollections.observableArrayList();
+        expResult.add("Object 1");
+        expResult.add("Object 3");
+        instance.add("Name 1", "Object 1");
+        instance.add("Name 2", "Object 2");
+        instance.add("Name 3", "Object 3");
+        
+        ObservableList result = instance.getObjectsObservableList();
+        instance.remove("Name 2");
+        
+        assertThat(result, CoreMatchers.is(expResult));
     }
 }
