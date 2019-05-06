@@ -1,4 +1,4 @@
-package trainerapp.gui.model;
+package trainerapp.gui.testutil;
 
 import java.util.Arrays;
 import java.util.Collection;
