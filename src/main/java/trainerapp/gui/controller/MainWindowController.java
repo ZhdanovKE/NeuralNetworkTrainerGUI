@@ -329,13 +329,19 @@ public class MainWindowController implements Initializable {
         samplesListViewFacade = new ListViewEditingFacade<>(samplesListView,
                 samplesRepoRepository);
         
-        trainNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
-        testNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
-        saveNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
-        viewNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
-        removeNNButton.disableProperty().bind(Bindings.isEmpty(networksListView.getItems()));
-        
-        viewSamplesButton.disableProperty().bind(Bindings.isEmpty(samplesListView.getItems()));
-        removeSamplesButton.disableProperty().bind(Bindings.isEmpty(samplesListView.getItems()));
+        trainNNButton.disableProperty().bind(Bindings.isNull(networksListView.
+                getSelectionModel().selectedItemProperty()));
+        testNNButton.disableProperty().bind(Bindings.isNull(networksListView.
+                getSelectionModel().selectedItemProperty()));
+        saveNNButton.disableProperty().bind(Bindings.isNull(networksListView.
+                getSelectionModel().selectedItemProperty()));
+        viewNNButton.disableProperty().bind(Bindings.isNull(networksListView.
+                getSelectionModel().selectedItemProperty()));
+        removeNNButton.disableProperty().bind(Bindings.isNull(networksListView.
+                getSelectionModel().selectedItemProperty()));
+        viewSamplesButton.disableProperty().bind(Bindings.isNull(samplesListView.
+                getSelectionModel().selectedItemProperty()));
+        removeSamplesButton.disableProperty().bind(Bindings.isNull(samplesListView.
+                getSelectionModel().selectedItemProperty()));
     }
 }
