@@ -176,6 +176,14 @@ public class MainWindowController implements Initializable {
         return namePlusExtension.substring(0, lastDotIdx);
     }
     
+    private String extractExtension(String namePlusExtension) {
+        int lastDotIdx = namePlusExtension.lastIndexOf(".");
+        if (lastDotIdx == -1) {
+            return "";
+        }
+        return namePlusExtension.substring(lastDotIdx + 1);
+    }
+    
     @FXML
     private void handleSaveNNButtonAction(ActionEvent event) {
         if (nnRepository.isEmpty()) {
@@ -208,7 +216,15 @@ public class MainWindowController implements Initializable {
             reportMessage("Selected file: " + selectedFile.getAbsolutePath());
             NeuralNetworkLoader loader = new NeuralNetworkLoader();
             try {
-                loader.save(selectedNN, selectedFile.getAbsolutePath());
+                if (extractExtension(selectedFile.getAbsolutePath()).
+                        toLowerCase().trim().equals("txt")) {
+                    reportMessage("Saving network as text");
+                    loader.saveAsText(selectedNN, selectedFile.getAbsolutePath());
+                }
+                else {
+                    reportMessage("Saving network as binary data");
+                    loader.save(selectedNN, selectedFile.getAbsolutePath());
+                }
             }
             catch(IllegalArgumentException e) {
                 reportMessage("Error while saving a file: " + e.getMessage());
