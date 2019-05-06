@@ -111,17 +111,20 @@ public class TestNNWindowController implements Initializable {
     private void setChosenNetwork(NeuralNetwork nn) {
         evaluateButton.setDisable(true);
         
-        nnEvaluator = new NeuralNetworkEvaluator(nn);
-        
         inputTableViewFacade.clear();
-        createInputColumns(nn.getNumberInputs());
-        addRow();
-        
         outputTableViewFacade.clear();
-        createOutputColumns(nn.getNumberOutputs());
-        addEmptyOutputRow();
-        
-        evaluateButton.setDisable(false);
+        if (nn == null) {
+            nnEvaluator = null;
+        }
+        else {
+            nnEvaluator = new NeuralNetworkEvaluator(nn);
+            createInputColumns(nn.getNumberInputs());
+            addRow();
+            createOutputColumns(nn.getNumberOutputs());
+            addEmptyOutputRow();
+            
+            evaluateButton.setDisable(false);
+        }
     }
     
     private void createInputColumns(int nColumns) {

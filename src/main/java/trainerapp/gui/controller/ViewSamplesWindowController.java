@@ -38,7 +38,7 @@ public class ViewSamplesWindowController implements Initializable {
             throw new NullPointerException("Repository cannot be null");
         }
         this.samplesRepoRepository = repo;
-        samplesComboBoxFacade.setRepository(repo);
+        samplesComboBoxFacade.setRepository(this.samplesRepoRepository);
     }
     
     public void selectSamples(SamplesRepository<Double> selectedSamplesRepo) {
@@ -52,6 +52,10 @@ public class ViewSamplesWindowController implements Initializable {
     private void updateSamplesTable() {
         samplesTableView.getItems().clear();
         samplesTableView.getColumns().clear();
+        
+        if (samplesComboBoxFacade.getSelectedItem() == null) {
+            return;
+        }
         
         // Create colums
         createSamplesTableColumns();

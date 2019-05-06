@@ -329,7 +329,7 @@ public class TrainNNWindowController implements Initializable {
             trainedName = ((NamedNeuralNetwork) nn).getName() + "_trained";
         }
         else {
-            trainedName = nn.toString() + "_trained";
+            trainedName = nn == null ? "" : (nn.toString() + "_trained");
         }
         return trainedName;
     }
@@ -338,16 +338,16 @@ public class TrainNNWindowController implements Initializable {
         setNetworkHasBeenSaved(false);
         setNetworkHasBeenTrained(false);
         
-        nSamplesVarsLabel.setText(String.format(" (%d vars)",
-                getRequiredSampleSize(chosenNN)));
-        
         clearTrainingInfo();
         if (trainerFacade.getTrainingActive()) {
             trainerFacade.stopTraining();
         }
 
+        nSamplesVarsLabel.setText(chosenNN == null ? "" : 
+                String.format(" (%d vars)",
+                    getRequiredSampleSize(chosenNN)));
         newNameField.setText(getDefaultTrainedNameFor(chosenNN));
-        
+       
         if (samplesRepoRepository != null) {
             updateValidSamplesReposList();
         }
@@ -361,7 +361,7 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private int getRequiredSampleSize(NeuralNetwork nn) {
-        return nn.getNumberInputs() + nn.getNumberOutputs();
+        return nn == null ? 0 : nn.getNumberInputs() + nn.getNumberOutputs();
     } 
     
     private void updateValidSamplesReposList() {
