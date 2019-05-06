@@ -55,6 +55,9 @@ public class ViewNNWindowController implements Initializable {
     private void updateTabs() {
         tabPane.getTabs().clear();
         NeuralNetwork nn = selectedNNComboBoxFacade.getSelectedItem();
+        if (nn == null) {
+            return;
+        }
         
         // Hidden layers
         for (int tabIdx = 0; tabIdx < nn.getNumberHiddenLayers(); tabIdx++) {

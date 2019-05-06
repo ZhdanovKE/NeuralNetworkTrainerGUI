@@ -44,8 +44,6 @@ public class TestNNWindowController implements Initializable {
 
     private NamedObjectRepository<NeuralNetwork> nnRepository;
     
-    private NeuralNetwork chosenNetwork;
-    
     private NeuralNetworkEvaluator nnEvaluator;
     
     public TestNNWindowController() {
@@ -64,7 +62,8 @@ public class TestNNWindowController implements Initializable {
     
     @FXML
     void handleEvaluateButtonAction(ActionEvent event) {
-        if (chosenNetwork == null) {
+        if (    nnComboBoxFacade == null ||
+                nnComboBoxFacade.getSelectedItem() == null  ) {
             return;
         }
         for (int rowIdx = 0; rowIdx < inputTableViewFacade.getItems().size(); rowIdx++) {
@@ -78,7 +77,8 @@ public class TestNNWindowController implements Initializable {
 
     @FXML
     void handleAddInputButtonAction(ActionEvent event) {
-        if (chosenNetwork == null) {
+        if (    nnComboBoxFacade == null ||
+                nnComboBoxFacade.getSelectedItem() == null  ) {
             return;
         }
         addRow();
@@ -87,7 +87,8 @@ public class TestNNWindowController implements Initializable {
 
     @FXML
     void handleRemoveInputButtonAction(ActionEvent event) {
-        if (chosenNetwork == null) {
+        if (    nnComboBoxFacade == null ||
+                nnComboBoxFacade.getSelectedItem() == null  ) {
             return;
         }
         removeLastRow();
@@ -107,36 +108,23 @@ public class TestNNWindowController implements Initializable {
         nnComboBoxFacade.setRepository(nnRepository);
     }
     
-    /**
-     * Initializes the controller class.
-     */
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        nnComboBoxFacade = new ComboBoxRepositoryFacade<>(nnCombobox, 
-                (t, s) -> t.toString());
-        nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
-        
-        inputTableViewFacade = new NumberTableViewFacade<>(inputTableView,
-            new DoubleStringConverter());
-        outputTableViewFacade = new NumberTableViewFacade<>(outputTableView, 
-            new DoubleStringConverter());
-    }    
-    
     private void setChosenNetwork(NeuralNetwork nn) {
         evaluateButton.setDisable(true);
         
-        chosenNetwork = nn;
-        nnEvaluator = new NeuralNetworkEvaluator(nn);
-        
         inputTableViewFacade.clear();
-        createInputColumns(nn.getNumberInputs());
-        addRow();
-        
         outputTableViewFacade.clear();
-        createOutputColumns(nn.getNumberOutputs());
-        addEmptyOutputRow();
-        
-        evaluateButton.setDisable(false);
+        if (nn == null) {
+            nnEvaluator = null;
+        }
+        else {
+            nnEvaluator = new NeuralNetworkEvaluator(nn);
+            createInputColumns(nn.getNumberInputs());
+            addRow();
+            createOutputColumns(nn.getNumberOutputs());
+            addEmptyOutputRow();
+            
+            evaluateButton.setDisable(false);
+        }
     }
     
     private void createInputColumns(int nColumns) {
@@ -190,5 +178,20 @@ public class TestNNWindowController implements Initializable {
             newRow.add(output[i]);
         }
         outputTableViewFacade.getItems().set(rowIdx, newRow);
+    }
+    
+    /**
+     * Initializes the controller class.
+     */
+    @Override
+    public void initialize(URL url, ResourceBundle rb) {
+        nnComboBoxFacade = new ComboBoxRepositoryFacade<>(nnCombobox, 
+                (t, s) -> t.toString());
+        nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
+        
+        inputTableViewFacade = new NumberTableViewFacade<>(inputTableView,
+            new DoubleStringConverter());
+        outputTableViewFacade = new NumberTableViewFacade<>(outputTableView, 
+            new DoubleStringConverter());
     }
 }
