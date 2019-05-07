@@ -45,7 +45,7 @@ public class ViewNNWindowController implements Initializable {
     
     private List<ViewNNTabController> tabControllers;
     
-    private SimpleBooleanProperty saveNeeded = new SimpleBooleanProperty(false);
+    private final SimpleBooleanProperty saveNeeded = new SimpleBooleanProperty(false);
     private BooleanExpression anyTabChanged;
     
     public void setNetworkRepository(NamedObjectRepository<NeuralNetwork> repo) {
