@@ -151,7 +151,14 @@ public class MainWindowController implements Initializable {
             reportMessage("Selected file: " + selectedFile.getAbsolutePath());
             NeuralNetworkLoader loader = new NeuralNetworkLoader();
             try {
-                NeuralNetwork loadedNetwork = loader.load(selectedFile.getAbsolutePath());
+                NeuralNetwork loadedNetwork;
+                if (extractExtension(selectedFile.getName()).toLowerCase().
+                        trim().equals("txt")) {
+                    loadedNetwork = loader.loadFromTextFile(selectedFile.getAbsolutePath());
+                }
+                else {
+                    loadedNetwork = loader.load(selectedFile.getAbsolutePath());
+                }
                 if (loadedNetwork instanceof NamedNeuralNetwork) {
                     addNetworkToList(loadedNetwork, ((NamedNeuralNetwork) loadedNetwork).getName());
                 }
