@@ -2,7 +2,11 @@ package trainerapp.gui.controller;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.ResourceBundle;
+import javafx.beans.binding.BooleanExpression;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -28,13 +32,21 @@ public class ViewNNWindowController implements Initializable {
     private TabPane tabPane;
     
     @FXML
-    private ComboBox<NeuralNetwork> selectedNNComboBox;
-    private ComboBoxRepositoryFacade<NeuralNetwork> selectedNNComboBoxFacade;
+    private Button saveAndCloseButton;
 
     @FXML
-    private Button closeButton;
+    private Button saveButton;
+    
+    @FXML
+    private ComboBox<NeuralNetwork> selectedNNComboBox;
+    private ComboBoxRepositoryFacade<NeuralNetwork> selectedNNComboBoxFacade;
     
     private NamedObjectRepository<NeuralNetwork> nnRepository;
+    
+    private List<ViewNNTabController> tabControllers;
+    
+    private SimpleBooleanProperty saveNeeded = new SimpleBooleanProperty(false);
+    private BooleanExpression anyTabChanged;
     
     public void setNetworkRepository(NamedObjectRepository<NeuralNetwork> repo) {
         this.nnRepository = repo;
@@ -52,8 +64,24 @@ public class ViewNNWindowController implements Initializable {
         updateTabs();
     }
     
-    private void updateTabs() {
+    private void clearData() {
         tabPane.getTabs().clear();
+        saveNeeded.unbind();
+        saveNeeded.set(false);
+        tabControllers.clear();
+    }
+    
+    private void setUpSaveNeededProperty() {
+        anyTabChanged = new SimpleBooleanProperty(false);
+        for (ViewNNTabController controller : tabControllers) {
+            anyTabChanged = anyTabChanged.or(controller.changedProperty());
+        }
+        saveNeeded.bind(anyTabChanged);
+    }
+    
+    private void updateTabs() {
+        clearData();
+        
         NeuralNetwork nn = selectedNNComboBoxFacade.getSelectedItem();
         if (nn == null) {
             return;
@@ -68,6 +96,8 @@ public class ViewNNWindowController implements Initializable {
         // Output layer
         Node tabContent = createTabContentForNN(nn, nn.getNumberHiddenLayers());
         addTabWithContent(tabContent, "Output");
+        
+        setUpSaveNeededProperty();
     }
             
     private void addTabWithContent(Node content, String title) {
@@ -75,7 +105,6 @@ public class ViewNNWindowController implements Initializable {
         tab.setContent(content);
         tabPane.getTabs().add(tab);
     }
-        
     
     private Node createTabContentForNN(NeuralNetwork nn, int idx) {
         FXMLLoader tabLoader = new FXMLLoader(this.getClass().
@@ -86,6 +115,7 @@ public class ViewNNWindowController implements Initializable {
             ViewNNTabController tabController = (ViewNNTabController)tabLoader.
                     getController();
             tabController.setUp(nn, idx);
+            tabControllers.add(tabController);
         }
         catch(IOException e) {
             System.out.println("Exception: " + e.toString());
@@ -103,14 +133,28 @@ public class ViewNNWindowController implements Initializable {
         closeWindow(event);
     }
     
+    @FXML
+    void handleSaveButtonAction(ActionEvent event) {
+        tabControllers.forEach(ViewNNTabController::saveChanges);
+    }
+
+    @FXML
+    void handleSaveAndCloseButtonAction(ActionEvent event) {
+        handleSaveButtonAction(event);
+        handleCloseButtonAction(event);
+    }
+    
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        tabControllers = new ArrayList<>();
         selectedNNComboBoxFacade = new ComboBoxRepositoryFacade<>(selectedNNComboBox,
                 (t, s) -> t.toString());
         selectedNNComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
+        
+        saveButton.disableProperty().bind(saveNeeded.not());
+        saveAndCloseButton.disableProperty().bind(saveNeeded.not());
     }
 }

@@ -6,11 +6,13 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="536.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.ViewNNWindowController">
+<AnchorPane id="AnchorPane" minHeight="536.0" minWidth="600.0" prefHeight="536.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.ViewNNWindowController">
    <children>
       <TabPane fx:id="tabPane" layoutX="8.0" layoutY="77.0" prefHeight="403.0" prefWidth="587.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="56.0" AnchorPane.leftAnchor="8.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="77.0" />
       <Button fx:id="closeButton" cancelButton="true" layoutX="530.0" layoutY="448.0" mnemonicParsing="false" onAction="#handleCloseButtonAction" text="Close" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0" />
       <Label layoutX="32.0" layoutY="32.0" text="Neural Network:" />
       <ComboBox fx:id="selectedNNComboBox" layoutX="150.0" layoutY="27.0" prefHeight="31.0" prefWidth="196.0" promptText="Choose..." AnchorPane.leftAnchor="150.0" AnchorPane.rightAnchor="254.0" />
+      <Button fx:id="saveButton" layoutX="332.0" layoutY="491.0" mnemonicParsing="false" onAction="#handleSaveButtonAction" text="Save" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="217.0" />
+      <Button fx:id="saveAndCloseButton" layoutX="399.0" layoutY="491.0" mnemonicParsing="false" onAction="#handleSaveAndCloseButtonAction" text="Save and Close" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="81.0" />
    </children>
 </AnchorPane>
