@@ -1,8 +1,8 @@
 package trainerapp.gui.model;
 
 import neuralnetwork.NeuralNetwork;
-import static trainerapp.gui.model.TestUtils.assertNNEquals;
-import static trainerapp.gui.model.TestUtils.assertNNNotEquals;
+import static trainerapp.gui.testutil.TestUtils.assertNNEquals;
+import static trainerapp.gui.testutil.TestUtils.assertNNNotEquals;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
