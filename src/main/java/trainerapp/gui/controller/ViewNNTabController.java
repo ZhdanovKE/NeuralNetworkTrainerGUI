@@ -3,7 +3,10 @@ package trainerapp.gui.controller;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -48,12 +51,18 @@ public class ViewNNTabController implements Initializable {
     
     private int prevLayerSize;
     
-    public ObservableList<ObservableList<Double>> getWeights() {
-        return layerWeights;
-    }
+    private SimpleBooleanProperty changed;
     
-    public ObservableList<Double> getBiases() {
-        return layerBiases;
+    private final ListChangeListener<Double> changeListener = (c) -> {
+        while (c.next()) {
+            if (!c.wasPermutated()) {
+                changed.set(true);
+            }
+        }
+    };
+    
+    public ViewNNTabController() {
+        changed = new SimpleBooleanProperty(false);
     }
     
     public void setUp(NeuralNetwork nn, int curLayerNum) {
@@ -65,30 +74,16 @@ public class ViewNNTabController implements Initializable {
         }
         network = nn;
         this.curLayerNum = curLayerNum;
+        changed.set(false);
+        
         initLayerInfoData();
 
         // Set weights and biases
-        layerBiases = FXCollections.observableList(
-            new ArrayList<>(curLayerSize));
-        for (int toNeuron = 0; toNeuron < curLayerSize; toNeuron++) {
-            weightsTableViewFacade.addColumn("Neuron " + (toNeuron + 1));
-            biasesTableViewFacade.addColumn("Neuron " + (toNeuron + 1));
-            layerBiases.add(nn.getBias(curLayerNum, toNeuron));
-        }
-        biasesTableViewFacade.getItems().add(layerBiases);
+        setWeights();
         
-        layerWeights = FXCollections.observableList(
-                new ArrayList<>(prevLayerSize));
-        for (int fromNeuron = 0; fromNeuron < prevLayerSize; fromNeuron++) {
-            ObservableList<Double> weightsFromNeuron = 
-                    FXCollections.observableList(new ArrayList<>(
-                            curLayerSize));
-            for (int toNeuron = 0; toNeuron < curLayerSize; toNeuron++) {
-                 weightsFromNeuron.add(nn.getWeight(curLayerNum, fromNeuron, toNeuron));
-            }
-            layerWeights.add(weightsFromNeuron);
-        }
-        weightsTableViewFacade.setItems(layerWeights);
+        setBiases();
+        
+        setUpChangeListeners();
     }
     
     private void initLayerInfoData() {
@@ -121,6 +116,37 @@ public class ViewNNTabController implements Initializable {
         prevLayerNeuronLabel.setText(prevLayerStr + "'s neurons");
     }
     
+    private void setWeights() {
+        layerWeights = FXCollections.observableList(
+                new ArrayList<>(prevLayerSize));
+        for (int fromNeuron = 0; fromNeuron < prevLayerSize; fromNeuron++) {
+            ObservableList<Double> weightsFromNeuron = 
+                    FXCollections.observableList(new ArrayList<>(
+                            curLayerSize));
+            for (int toNeuron = 0; toNeuron < curLayerSize; toNeuron++) {
+                 weightsFromNeuron.add(network.getWeight(curLayerNum, fromNeuron, toNeuron));
+            }
+            layerWeights.add(weightsFromNeuron);
+        }
+        weightsTableViewFacade.setItems(layerWeights);
+    }
+    
+    private void setBiases() {
+        layerBiases = FXCollections.observableList(
+            new ArrayList<>(curLayerSize));
+        for (int toNeuron = 0; toNeuron < curLayerSize; toNeuron++) {
+            weightsTableViewFacade.addColumn("Neuron " + (toNeuron + 1));
+            biasesTableViewFacade.addColumn("Neuron " + (toNeuron + 1));
+            layerBiases.add(network.getBias(curLayerNum, toNeuron));
+        }
+        biasesTableViewFacade.getItems().add(layerBiases);
+    }
+    
+    private void setUpChangeListeners() {
+        layerWeights.forEach(weights -> weights.addListener(changeListener));
+        layerBiases.addListener(changeListener);
+    }
+    
     public void saveChanges() {
         if (network == null) {
             throw new IllegalStateException("This tab hasn't been set up");
@@ -135,6 +161,11 @@ public class ViewNNTabController implements Initializable {
                          layerWeights.get(fromNeuron).get(toNeuron));
             }
         }
+        changed.set(false);
+    }
+    
+    public BooleanProperty changedProperty() {
+        return changed;
     }
     
     /**
