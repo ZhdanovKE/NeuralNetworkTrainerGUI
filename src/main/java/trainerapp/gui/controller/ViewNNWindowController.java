@@ -73,9 +73,9 @@ public class ViewNNWindowController implements Initializable {
     
     private void setUpSaveNeededProperty() {
         anyTabChanged = new SimpleBooleanProperty(false);
-        for (ViewNNTabController controller : tabControllers) {
+        tabControllers.forEach((controller) -> {
             anyTabChanged = anyTabChanged.or(controller.changedProperty());
-        }
+        });
         saveNeeded.bind(anyTabChanged);
     }
     
@@ -143,13 +143,16 @@ public class ViewNNWindowController implements Initializable {
         handleSaveButtonAction(event);
         handleCloseButtonAction(event);
     }
+
+    public ViewNNWindowController() {
+        tabControllers = new ArrayList<>();
+    }
     
     /**
      * Initializes the controller class.
      */
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        tabControllers = new ArrayList<>();
         selectedNNComboBoxFacade = new ComboBoxRepositoryFacade<>(selectedNNComboBox,
                 (t, s) -> t.toString());
         selectedNNComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
