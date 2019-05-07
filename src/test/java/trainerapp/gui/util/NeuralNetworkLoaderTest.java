@@ -18,6 +18,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import trainerapp.gui.model.NamedNeuralNetwork;
+import trainerapp.gui.testutil.TestUtils;
 
 /**
  *
@@ -99,5 +100,70 @@ public class NeuralNetworkLoaderTest {
         catch(IOException e) {
             fail("Cannot read file: " + e.toString());
         }
+    }
+    
+    @Test
+    public void testLoadFromTextFile_CorrectFile_CorrectNamedNetworkCreated() {
+        System.out.println("loadFromTextFile");
+        String fileName = getClass().getResource("/trainerapp/gui/util/named_2_3_4_correct.txt").getFile();
+        NeuralNetworkLoader instance = new NeuralNetworkLoader();
+        
+        NeuralNetwork nn = instance.loadFromTextFile(fileName);
+        
+        assertTrue(nn instanceof NamedNeuralNetwork);
+        NamedNeuralNetwork namedNN = (NamedNeuralNetwork)nn;
+        assertEquals("Network Name", namedNN.getName());
+        assertEquals(2, namedNN.getNumberInputs());
+        assertEquals(1, namedNN.getNumberHiddenLayers());
+        assertEquals(3, namedNN.getHiddenLayerSize(0));
+        assertEquals(4, namedNN.getNumberOutputs());
+        
+        double[][][] weights = TestUtils.extractNNWeights(namedNN);
+        double[][] biases = TestUtils.extractNNBiases(namedNN);
+        
+        double[][][] expectedWeights = {
+            {{1, 4}, {2, 5}, {3, 6}}, 
+            {{1.5, 5.5, 9.5}, {2.5, 6.5, 10.5}, {3.5, 7.5, 11.5}, {4.5, 8.5, 12.5}}
+        };
+    
+        double[][] expectedBiases = {
+            {-1, -2, -3}, 
+            {-1.5, -2.5, -3.5, -4.5}
+        };
+        
+        TestUtils.assertArraysEqual(expectedWeights, weights);
+        TestUtils.assertArraysEqual(expectedBiases, biases);
+    }
+    
+    @Test
+    public void testLoadFromTextFile_CorrectNoNameFile_CorrectNetworkCreated() {
+        System.out.println("loadFromTextFile");
+        String fileName = getClass().getResource("/trainerapp/gui/util/no_named_2_3_4_correct.txt").getFile();
+        NeuralNetworkLoader instance = new NeuralNetworkLoader();
+        
+        NeuralNetwork nn = instance.loadFromTextFile(fileName);
+        
+        assertTrue(!(nn instanceof NamedNeuralNetwork));
+
+        assertEquals(2, nn.getNumberInputs());
+        assertEquals(1, nn.getNumberHiddenLayers());
+        assertEquals(3, nn.getHiddenLayerSize(0));
+        assertEquals(4, nn.getNumberOutputs());
+        
+        double[][][] weights = TestUtils.extractNNWeights(nn);
+        double[][] biases = TestUtils.extractNNBiases(nn);
+        
+        double[][][] expectedWeights = {
+            {{1, 4}, {2, 5}, {3, 6}}, 
+            {{1.5, 5.5, 9.5}, {2.5, 6.5, 10.5}, {3.5, 7.5, 11.5}, {4.5, 8.5, 12.5}}
+        };
+    
+        double[][] expectedBiases = {
+            {-1, -2, -3}, 
+            {-1.5, -2.5, -3.5, -4.5}
+        };
+        
+        TestUtils.assertArraysEqual(expectedWeights, weights);
+        TestUtils.assertArraysEqual(expectedBiases, biases);
     }
 }
