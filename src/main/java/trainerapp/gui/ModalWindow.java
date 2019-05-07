@@ -29,7 +29,8 @@ public class ModalWindow {
         catch(IOException e) {
             throw new IllegalArgumentException("Cannot create window", e);
         }
-        stage.setScene(new Scene(root));
+        // create a scene with mininum size
+        stage.setScene(new Scene(root, root.minWidth(-1), root.minHeight(-1)));
         stage.setTitle(title);
         stage.initModality(Modality.APPLICATION_MODAL);
         stage.initOwner(parent);
@@ -49,6 +50,9 @@ public class ModalWindow {
         stage.setOnShown((evt) -> {
             stage.setX(centerXPosition - stage.getWidth() / 2.0);
             stage.setY(centerYPosition - stage.getHeight() / 2.0);
+            // set min size to the current size: min size of scene + borders
+            stage.setMinWidth(stage.getWidth());
+            stage.setMinHeight(stage.getHeight());
             stage.show();
         });
     }

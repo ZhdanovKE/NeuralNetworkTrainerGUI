@@ -6,7 +6,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="179.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.CreateNNWindowController">
+<AnchorPane id="AnchorPane" minHeight="179.0" minWidth="634.0" prefHeight="179.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.CreateNNWindowController">
    <children>
       <Button fx:id="cancelButton" cancelButton="true" layoutX="541.0" layoutY="135.0" mnemonicParsing="false" onAction="#handleCancelButtonAction" text="Cancel" />
       <Button fx:id="createButton" defaultButton="true" layoutX="462.0" layoutY="135.0" mnemonicParsing="false" onAction="#handleCreateButtonAction" text="Create" />

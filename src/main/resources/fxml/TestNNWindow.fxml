@@ -7,7 +7,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" prefHeight="421.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.TestNNWindowController">
+<AnchorPane id="AnchorPane" minHeight="421.0" minWidth="570.0" prefHeight="421.0" prefWidth="570.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.TestNNWindowController">
    <children>
       <Button fx:id="closeButton" cancelButton="true" layoutX="505.0" layoutY="344.0" mnemonicParsing="false" onAction="#handleCloseButtonAction" text="Close" AnchorPane.bottomAnchor="26.0" AnchorPane.rightAnchor="39.0" />
       <GridPane layoutX="5.0" layoutY="6.0" prefHeight="331.0" prefWidth="577.0" AnchorPane.bottomAnchor="62.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="6.0">
