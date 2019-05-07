@@ -1,25 +1,74 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import java.lang.*?>
 <?import java.util.*?>
 <?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<AnchorPane id="AnchorPane" minHeight="179.0" minWidth="634.0" prefHeight="179.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.CreateNNWindowController">
+<AnchorPane id="AnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="150.0" minWidth="556.0" prefHeight="151.0" prefWidth="636.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="trainerapp.gui.controller.CreateNNWindowController">
    <children>
-      <Button fx:id="cancelButton" cancelButton="true" layoutX="541.0" layoutY="135.0" mnemonicParsing="false" onAction="#handleCancelButtonAction" text="Cancel" />
-      <Button fx:id="createButton" defaultButton="true" layoutX="462.0" layoutY="135.0" mnemonicParsing="false" onAction="#handleCreateButtonAction" text="Create" />
-      <TextField fx:id="nInputsField" layoutX="24.0" layoutY="38.0" prefHeight="31.0" prefWidth="97.0" promptText="Inputs" text="1" />
-      <TextField fx:id="nOutputsField" layoutX="483.0" layoutY="38.0" prefHeight="31.0" prefWidth="89.0" promptText="Outputs" text="1" />
-      <TableView fx:id="hiddenLayerSizesTable" editable="true" layoutX="167.0" layoutY="30.0" prefHeight="76.0" prefWidth="242.0" />
-      <Button fx:id="addLayerButton" layoutX="419.0" layoutY="30.0" mnemonicParsing="false" onAction="#handleAddLayerButtonAction" text="+" />
-      <Button fx:id="deleteLayerButton" layoutX="419.0" layoutY="75.0" mnemonicParsing="false" onAction="#handleRemoveLayerButtonAction" prefHeight="31.0" prefWidth="31.0" text="-" />
-      <Label layoutX="24.0" layoutY="5.0" text="Number of inputs" />
-      <Label layoutX="483.0" layoutY="5.0" text="Number of outputs" />
-      <Label layoutX="167.0" layoutY="4.0" text="Sizes of hidden layers (min 1 layer)" />
-      <CheckBox fx:id="randomWeightsCheckbox" layoutX="288.0" layoutY="130.0" mnemonicParsing="false" text="Random weights" />
-      <TextField fx:id="nameField" layoutX="75.0" layoutY="125.0" />
-      <Label layoutX="22.0" layoutY="130.0" text="Name:" />
+      <GridPane layoutX="12.0" layoutY="14.0" prefHeight="274.0" prefWidth="611.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="NEVER" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+          <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="120.0" minWidth="120.0" prefWidth="120.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="35.0" minWidth="35.0" prefWidth="35.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="10.0" minWidth="10.0" prefWidth="10.0" />
+            <ColumnConstraints hgrow="NEVER" maxWidth="135.0" minWidth="135.0" prefWidth="135.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="NEVER" />
+          <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="217.0" vgrow="ALWAYS" />
+          <RowConstraints maxHeight="43.0" minHeight="34.0" prefHeight="41.0" vgrow="NEVER" />
+        </rowConstraints>
+         <children>
+            <Label text="Number of inputs" GridPane.halignment="CENTER" />
+            <TextField fx:id="nInputsField" prefHeight="31.0" prefWidth="97.0" promptText="Inputs" text="1" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets right="5.0" />
+               </GridPane.margin>
+            </TextField>
+            <Label text="Sizes of hidden layers (min 1 layer)" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.halignment="CENTER">
+               <GridPane.margin>
+                  <Insets left="5.0" />
+               </GridPane.margin>
+            </Label>
+            <TableView fx:id="hiddenLayerSizesTable" editable="true" prefHeight="76.0" prefWidth="242.0" GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="1">
+               <GridPane.margin>
+                  <Insets left="5.0" right="5.0" />
+               </GridPane.margin>
+            </TableView>
+            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" spacing="10.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+               <children>
+                  <Button fx:id="addLayerButton" mnemonicParsing="false" onAction="#handleAddLayerButtonAction" text="+" />
+                  <Button fx:id="deleteLayerButton" mnemonicParsing="false" onAction="#handleRemoveLayerButtonAction" prefHeight="31.0" prefWidth="31.0" text="-" />
+               </children>
+            </VBox>
+            <Label text="Number of outputs" GridPane.columnIndex="5" GridPane.halignment="CENTER" />
+            <TextField fx:id="nOutputsField" prefHeight="31.0" prefWidth="89.0" promptText="Outputs" text="1" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+            <HBox alignment="BOTTOM_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0" GridPane.columnIndex="4" GridPane.columnSpan="2" GridPane.rowIndex="2">
+               <children>
+                  <Button fx:id="createButton" defaultButton="true" mnemonicParsing="false" onAction="#handleCreateButtonAction" text="Create" />
+                  <Button fx:id="cancelButton" cancelButton="true" mnemonicParsing="false" onAction="#handleCancelButtonAction" text="Cancel" />
+               </children>
+            </HBox>
+            <CheckBox fx:id="randomWeightsCheckbox" mnemonicParsing="false" text="Random weights" GridPane.columnIndex="2" GridPane.columnSpan="2" GridPane.rowIndex="2">
+               <GridPane.margin>
+                  <Insets top="5.0" />
+               </GridPane.margin>
+            </CheckBox>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="2">
+               <children>
+                  <TextField fx:id="nameField" layoutX="57.0" layoutY="2.0" maxWidth="1.7976931348623157E308" prefHeight="31.0" prefWidth="260.0" AnchorPane.bottomAnchor="1.0" AnchorPane.leftAnchor="57.0" AnchorPane.rightAnchor="17.0" AnchorPane.topAnchor="2.0" />
+                  <Label layoutX="8.0" layoutY="7.0" text="Name:" />
+               </children>
+               <GridPane.margin>
+                  <Insets top="5.0" />
+               </GridPane.margin>
+            </AnchorPane>
+         </children>
+      </GridPane>
    </children>
 </AnchorPane>
