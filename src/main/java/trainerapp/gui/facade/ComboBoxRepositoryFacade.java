@@ -3,6 +3,9 @@ package trainerapp.gui.facade;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.control.ComboBox;
 import javafx.util.StringConverter;
 import trainerapp.gui.repository.NamedObjectRepository;
@@ -20,6 +23,8 @@ public class ComboBoxRepositoryFacade<T> {
     private NamedObjectRepository<T> repo;
     
     private T selectedItem;
+    
+    private BooleanProperty itemIsSelected;
     
     private Consumer<T> onItemSelectedHandler = (t) -> {};
     // Default converter
@@ -77,6 +82,8 @@ public class ComboBoxRepositoryFacade<T> {
                 (observable, oldValue, newValue) -> {
                     ComboBoxRepositoryFacade.this.onItemSelected(newValue);
         });
+        this.itemIsSelected = new SimpleBooleanProperty(false);
+        this.itemIsSelected.bind(this.comboBox.valueProperty().isNotNull());
     }
     
     /**
@@ -129,6 +136,16 @@ public class ComboBoxRepositoryFacade<T> {
     protected void onItemSelected(T newItem) {
          selectedItem = newItem;
          onItemSelectedHandler.accept(newItem);
+    }
+    
+    /**
+     * Get a {@code BooleanProperty} that reflects if an item
+     * has been selected in the {@code ComboBox}.
+     * @return {@code BooleanProperty} holding a boolean value if an item
+     * has been selected in the {@code ComboBox}.
+     */
+    public BooleanProperty itemIsSelectedProperty() {
+        return itemIsSelected;
     }
     
     /**
