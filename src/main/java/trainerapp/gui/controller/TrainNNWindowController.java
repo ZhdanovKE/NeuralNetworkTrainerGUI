@@ -89,10 +89,8 @@ public class TrainNNWindowController implements Initializable {
     private final int maxNumPoints = 30;
     
     private NamedObjectRepository<NeuralNetwork> nnRepository;
-    private final SimpleBooleanProperty networkChosen;
     
     private NamedObjectRepository<SamplesRepository<Double>> samplesRepoRepository;
-    private final SimpleBooleanProperty samplesRepoChosen;
     
     private final SimpleBooleanProperty trainingCanStart;
     
@@ -104,10 +102,6 @@ public class TrainNNWindowController implements Initializable {
     public TrainNNWindowController() {
         
         performanceEpochList = new ArrayList<>();
-        
-        networkChosen = new SimpleBooleanProperty(false);
-        
-        samplesRepoChosen = new SimpleBooleanProperty(false);
         
         trainingCanStart = new SimpleBooleanProperty(false);
         
@@ -386,17 +380,14 @@ public class TrainNNWindowController implements Initializable {
         nnComboBoxFacade  = new ComboBoxRepositoryFacade<>(nnComboBox,
                 (t, s) -> t.toString());
         nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
-        
-        networkChosen.bind(nnComboBox.valueProperty().isNotNull());
-        
+
         samplesComboBox.disableProperty().bind(trainerFacade.trainingActiveProperty());
         samplesComboBoxFacade = new ComboBoxRepositoryFacade<>(samplesComboBox, 
             (t,s) -> String.format("%s (%d vars)", s, t.sampleSize()));
         samplesComboBoxFacade.setOnItemSelected(this::setChosenSamplesRepo);
-        
-        samplesRepoChosen.bind(samplesComboBox.valueProperty().isNotNull());
 
-        trainingCanStart.bind(samplesRepoChosen.and(networkChosen));
+        trainingCanStart.bind(samplesComboBoxFacade.itemIsSelectedProperty().
+                and(nnComboBoxFacade.itemIsSelectedProperty()));
         
         trainerFacade.trainingActiveProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
