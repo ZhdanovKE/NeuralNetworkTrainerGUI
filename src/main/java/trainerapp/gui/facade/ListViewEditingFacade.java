@@ -53,6 +53,23 @@ public class ListViewEditingFacade<T> {
         this.listView.setItems(repo.getObjectsObservableList());
     }
     
+    /**
+     * Select {@link item} in the underlying {@code ListView}.
+     * @param item item to be selected in the {@code ListView}.
+     */
+    public void select(T item) {
+        listView.getSelectionModel().select(item);
+    }
+    
+    /**
+     * Get the currently selected item in the underlying {@code ListView}.
+     * @return selected item in the {@code ListView} or {@code null} if
+     * no selection is made.
+     */
+    public T getSelectedItem() {
+        return listView.getSelectionModel().getSelectedItem();
+    }
+    
     private void updateNamedObject(String oldName, String newName) {
         try {
             repo.rename(oldName, newName);
