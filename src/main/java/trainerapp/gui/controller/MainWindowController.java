@@ -85,7 +85,7 @@ public class MainWindowController implements Initializable {
             reportMessage("First load samples");
             return;
         }
-        SamplesRepository<Double> selectedRepo = samplesListView.getSelectionModel().
+        SamplesRepository<Double> selectedRepo = samplesListViewFacade.
                 getSelectedItem();
         if (selectedRepo == null) {
             reportMessage("First select samples");
@@ -104,7 +104,7 @@ public class MainWindowController implements Initializable {
     
     @FXML
     private void handleRemoveSamplesButtonAction(ActionEvent event) {
-        SamplesRepository<Double> selectedRepo = samplesListView.getSelectionModel().
+        SamplesRepository<Double> selectedRepo = samplesListViewFacade.
                 getSelectedItem();
         if (selectedRepo == null) {
             reportMessage("First select samples");
@@ -120,14 +120,13 @@ public class MainWindowController implements Initializable {
             reportMessage("First create or load a neural network");
             return;
         }
-        NeuralNetwork selectedNN = networksListView.getSelectionModel().
-                getSelectedItem();
+        NeuralNetwork selectedNN = networksListViewFacade.getSelectedItem();
         if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
         }
-        SamplesRepository<Double> selectedRepo = samplesListView.
-                getSelectionModel().getSelectedItem();
+        SamplesRepository<Double> selectedRepo = samplesListViewFacade.
+                getSelectedItem();
         try {
             Window thisWindow = ((Node)event.getSource()).getScene().getWindow();
 
@@ -197,8 +196,7 @@ public class MainWindowController implements Initializable {
             reportMessage("First create or load a neural network");
             return;
         }
-        NeuralNetwork selectedNN = networksListView.getSelectionModel().
-                getSelectedItem();
+        NeuralNetwork selectedNN = networksListViewFacade.getSelectedItem();
         if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
@@ -259,8 +257,7 @@ public class MainWindowController implements Initializable {
     
     @FXML
     private void handleRemoveNNButtonAction(ActionEvent event) {
-        NeuralNetwork selectedNN = networksListView.getSelectionModel().
-                getSelectedItem();
+        NeuralNetwork selectedNN = networksListViewFacade.getSelectedItem();
         if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
@@ -281,13 +278,15 @@ public class MainWindowController implements Initializable {
     
     public void focusNetworkIfNecessary() {
         if (nnRepository.size() == 1) {
-            networksListView.getSelectionModel().select(0);
+            networksListViewFacade.select(nnRepository.
+                    getObjectsObservableList().get(0));
         }
     }
     
     public void focusSamplesRepoIfNecessary() {
         if (samplesRepoRepository.size() == 1) {
-            samplesListView.getSelectionModel().select(0);
+            samplesListViewFacade.select(samplesRepoRepository.
+                    getObjectsObservableList().get(0));
         }
     }
     
@@ -297,8 +296,7 @@ public class MainWindowController implements Initializable {
             reportMessage("First create or load a neural network");
             return;
         }
-        NeuralNetwork selectedNN = networksListView.getSelectionModel().
-                getSelectedItem();
+        NeuralNetwork selectedNN = networksListViewFacade.getSelectedItem();
         if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
@@ -315,8 +313,7 @@ public class MainWindowController implements Initializable {
     
     @FXML 
     private void handleViewNNButtonAction(ActionEvent event) {
-        NeuralNetwork selectedNN = networksListView.getSelectionModel().
-                getSelectedItem();
+        NeuralNetwork selectedNN = networksListViewFacade.getSelectedItem();
         if (selectedNN == null) {
             reportMessage("First select a neural network");
             return;
