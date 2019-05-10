@@ -154,7 +154,7 @@ public class ViewNNWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         selectedNNComboBoxFacade = new ComboBoxRepositoryFacade<>(selectedNNComboBox,
-                (t, s) -> t.toString());
+                (t, s) -> String.format("%s %s", s, t.getSignature()));
         selectedNNComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
         
         saveButton.disableProperty().bind(saveNeeded.not());

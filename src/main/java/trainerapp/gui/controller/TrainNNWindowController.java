@@ -318,13 +318,8 @@ public class TrainNNWindowController implements Initializable {
     }
     
     private String getDefaultTrainedNameFor(NeuralNetwork nn) {
-        String trainedName;
-        if (nn instanceof NamedNeuralNetwork) {
-            trainedName = ((NamedNeuralNetwork) nn).getName() + "_trained";
-        }
-        else {
-            trainedName = nn == null ? "" : (nn.toString() + "_trained");
-        }
+        String trainedName = nn == null ? "" : 
+                nnRepository.getNameForObject(nn) + "_trained";
         return trainedName;
     }
     
@@ -378,7 +373,7 @@ public class TrainNNWindowController implements Initializable {
 
         nnComboBox.disableProperty().bind(trainerFacade.trainingActiveProperty());
         nnComboBoxFacade  = new ComboBoxRepositoryFacade<>(nnComboBox,
-                (t, s) -> t.toString());
+                (t, s) -> String.format("%s %s", s, t.getSignature()));
         nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
 
         samplesComboBox.disableProperty().bind(trainerFacade.trainingActiveProperty());

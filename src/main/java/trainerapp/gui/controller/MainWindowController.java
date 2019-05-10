@@ -206,20 +206,12 @@ public class MainWindowController implements Initializable {
         fileChooser.setTitle("Save Neural Network File");
         fileChooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter("All Files", "*.*"));
-        if (selectedNN instanceof NamedNeuralNetwork) {
-            fileChooser.setInitialFileName(
-                    ((NamedNeuralNetwork) selectedNN).getName().trim().
-                            replaceAll("\\s+", "_") + ".dat");
-        }
-        else {
-            fileChooser.setInitialFileName(
-                    nnRepository.getNameForObject(selectedNN).trim().
-                            replaceAll("\\s+", "_") + ".dat");
-        }
+        String networkName = nnRepository.getNameForObject(selectedNN);
+        fileChooser.setInitialFileName(networkName.trim().
+                        replaceAll("\\s+", "_") + ".dat");
         File selectedFile = fileChooser.showSaveDialog(thisWindow);
         if (selectedFile != null) {
             reportMessage("Selected file: " + selectedFile.getAbsolutePath());
-            String networkName = nnRepository.getNameForObject(selectedNN);
             NeuralNetworkLoader loader = new NeuralNetworkLoader();
             try {
                 if (extractExtension(selectedFile.getAbsolutePath()).

@@ -186,7 +186,7 @@ public class TestNNWindowController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         nnComboBoxFacade = new ComboBoxRepositoryFacade<>(nnCombobox, 
-                (t, s) -> t.toString());
+                (t, s) -> String.format("%s %s", s, t.getSignature()));
         nnComboBoxFacade.setOnItemSelected(this::setChosenNetwork);
         
         inputTableViewFacade = new NumberTableViewFacade<>(inputTableView,
