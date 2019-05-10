@@ -219,16 +219,19 @@ public class MainWindowController implements Initializable {
         File selectedFile = fileChooser.showSaveDialog(thisWindow);
         if (selectedFile != null) {
             reportMessage("Selected file: " + selectedFile.getAbsolutePath());
+            String networkName = nnRepository.getNameForObject(selectedNN);
             NeuralNetworkLoader loader = new NeuralNetworkLoader();
             try {
                 if (extractExtension(selectedFile.getAbsolutePath()).
                         toLowerCase().trim().equals("txt")) {
                     reportMessage("Saving network as text");
-                    loader.saveAsText(selectedNN, selectedFile.getAbsolutePath());
+                    loader.saveWithNameAsText(selectedNN, networkName, 
+                            selectedFile.getAbsolutePath());
                 }
                 else {
                     reportMessage("Saving network as binary data");
-                    loader.save(selectedNN, selectedFile.getAbsolutePath());
+                    loader.saveWithName(selectedNN, networkName, 
+                            selectedFile.getAbsolutePath());
                 }
             }
             catch(IllegalArgumentException e) {
