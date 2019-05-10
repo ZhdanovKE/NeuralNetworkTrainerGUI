@@ -40,6 +40,30 @@ public class NeuralNetworkLoader {
         }
     }
     
+    /**
+     * Save the {@link nn} network with name {@link name} into a file with path 
+     * {@link fileName}.
+     * @param nn {@code NeuralNetwork} to be written in file {@link fileName} along
+     * with the name {@link name}.
+     * @param name {@code String} name to be written in file {@link fileName} along 
+     * with the network {@link nn}.
+     * @param fileName Path to the file where the {@link nn} will be saved.
+     */
+    public void saveWithName(NeuralNetwork nn, String name, String fileName) {
+        if (nn == null || name == null || fileName == null) {
+            throw new NullPointerException("Arguments cannot be null");
+        }
+        File file = new File(fileName);
+        try (OutputStream out = new FileOutputStream(file)) {
+            try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
+                oos.writeObject(new NamedNeuralNetwork(nn, name));
+            }
+        }
+        catch(IOException e) {
+            throw new IllegalArgumentException("Cannot write into file", e);
+        }
+    }
+    
     public void saveAsText(NeuralNetwork nn, String fileName) {
         if (nn == null || fileName == null) {
             throw new NullPointerException("Arguments cannot be null");
@@ -51,6 +75,59 @@ public class NeuralNetworkLoader {
                 out.write(((NamedNeuralNetwork) nn).getName());
                 out.write("\n");
             }
+            // write signature
+            String hiddenSizes = Arrays.stream(nn.getHiddenLayerSizes()).
+                    mapToObj(v -> String.valueOf(v)).collect(
+                            Collectors.joining(", "));
+            String signature = String.format("%d, %s, %d", nn.getNumberInputs(),
+                    hiddenSizes, nn.getNumberOutputs());
+            out.write(signature);
+            out.write("\n");
+
+            int curLayerIdx = 0;
+            int prevLayerSize = nn.getNumberInputs();
+            int curLayerSize = nn.getHiddenLayerSize(curLayerIdx);
+
+            // input <--> layer 1
+            String layerStr = layerToString(nn, curLayerIdx, 
+                    curLayerSize, prevLayerSize);
+            out.write(layerStr);
+            out.write("\n");
+
+            // hidden layers
+            for (curLayerIdx = 1; curLayerIdx < nn.getNumberHiddenLayers(); curLayerIdx++) {
+                prevLayerSize = nn.getHiddenLayerSize(curLayerIdx - 1);
+                curLayerSize = nn.getHiddenLayerSize(curLayerIdx);
+                layerStr = layerToString(nn, curLayerIdx, 
+                    curLayerSize, prevLayerSize);
+                out.write(layerStr);
+                out.write("\n");
+            }
+            
+            // last layer <--> output
+            prevLayerSize = nn.getHiddenLayerSize(nn.getNumberHiddenLayers() - 1);
+            curLayerSize = nn.getNumberOutputs();
+            curLayerIdx = nn.getNumberHiddenLayers();
+            layerStr = layerToString(nn, curLayerIdx, 
+                curLayerSize, prevLayerSize);
+            out.write(layerStr);
+            out.flush();
+        }
+        catch (IOException e) {
+            throw new IllegalArgumentException("Cannot write into file", e);
+        }
+    }
+    
+    public void saveWithNameAsText(NeuralNetwork nn, String name, String fileName) {
+        if (nn == null || name == null || fileName == null) {
+            throw new NullPointerException("Arguments cannot be null");
+        }
+        File file = new File(fileName);
+        try (Writer out = new FileWriter(file)) {
+            // write name
+            out.write(name);
+            out.write("\n");
+            
             // write signature
             String hiddenSizes = Arrays.stream(nn.getHiddenLayerSizes()).
                     mapToObj(v -> String.valueOf(v)).collect(
