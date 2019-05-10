@@ -11,7 +11,6 @@ import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 import static org.junit.Assert.*;
 import org.mockito.Mockito;
-import org.mockito.exceptions.misusing.NullInsteadOfMockException;
 
 /**
  * Test cases for NamedObjectRepository class
