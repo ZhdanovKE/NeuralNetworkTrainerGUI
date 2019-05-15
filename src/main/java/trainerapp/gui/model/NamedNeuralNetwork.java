@@ -2,6 +2,7 @@ package trainerapp.gui.model;
 
 import neuralnetwork.NeuralNetwork;
 import java.io.Serializable;
+import neuralnetwork.init.Initializer;
 
 /**
  * A neural network that contains a name associated with it.
@@ -13,6 +14,15 @@ public class NamedNeuralNetwork extends NeuralNetwork implements Serializable {
     
     /** Name of this Neural Network **/
     private String name;
+    
+    public NamedNeuralNetwork(int numInputs, int[] hiddenLayerSizes, int numOutputs, String name,
+             Initializer initializer) {
+        super(numInputs, hiddenLayerSizes, numOutputs, initializer);
+        if (name == null) {
+            throw new NullPointerException("Name cannot be null");
+        }
+        this.name = name;
+    }
     
     public NamedNeuralNetwork(int numInputs, int[] hiddenLayerSizes, int numOutputs, String name) {
         super(numInputs, hiddenLayerSizes, numOutputs);

@@ -20,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
+import neuralnetwork.init.Initializer;
 
 /**
  * Neural Network Creation Window Controller class
@@ -119,56 +120,31 @@ public class CreateNNWindowController implements Initializable {
         nameFieldErrorFacade.hideError();
       
         NeuralNetwork newNN = createNamedNeuralNetwork(nInputs, hiddenLayerSizesArray,
-                nOutputs, name);
-                
+                nOutputs, name, randomWeights);
+        
         if (newNN != null) {
-            if (randomWeights) {
-                randomizeWeights(newNN);
-            }
             nnRepository.add(name, newNN);
-        }
-        else {
         }
         closeWindow(event);
     }
     
     private NeuralNetwork createNamedNeuralNetwork(int nInputs, int[] hiddenLayerSizes,
-            int nOutputs, String name) {
+            int nOutputs, String name, boolean randomWeights) {
         NeuralNetwork nn = null;
         try {
-            nn = new NamedNeuralNetwork(nInputs, hiddenLayerSizes, 
-                    nOutputs, name);
+            if (randomWeights) {
+                nn = new NamedNeuralNetwork(nInputs, hiddenLayerSizes, 
+                        nOutputs, name, Initializer.ofStdRandomRange());
+            }
+            else {
+                nn = new NamedNeuralNetwork(nInputs, hiddenLayerSizes, 
+                        nOutputs, name);
+            }
         }
         catch(Exception e) {
 
         }
         return nn;
-    }
-    
-    private void randomizeWeights(NeuralNetwork arg) {
-        Random rnd = new Random();
-        for (int neuronNum = 0; neuronNum < arg.getHiddenLayerSize(0); neuronNum++) {
-            for (int prevLayerNeuron = 0; prevLayerNeuron < arg.getNumberInputs(); prevLayerNeuron++) {
-                arg.setWeight(0, prevLayerNeuron, neuronNum, rnd.nextDouble());
-            }
-            arg.setBias(0, neuronNum, rnd.nextDouble());
-        }
-        
-        for (int layerNum = 1; layerNum < arg.getNumberHiddenLayers(); layerNum++) {
-            for (int neuronNum = 0; neuronNum < arg.getHiddenLayerSize(layerNum); neuronNum++) {
-                for (int prevLayerNeuron = 0; prevLayerNeuron < arg.getHiddenLayerSize(layerNum - 1); prevLayerNeuron++) {
-                    arg.setWeight(layerNum, prevLayerNeuron, neuronNum, rnd.nextDouble());
-                }
-                arg.setBias(layerNum, neuronNum, rnd.nextDouble());
-            }
-        }
-        
-        for (int neuronNum = 0; neuronNum < arg.getNumberOutputs(); neuronNum++) {
-            for (int prevLayerNeuron = 0; prevLayerNeuron < arg.getHiddenLayerSize(arg.getNumberHiddenLayers() - 1); prevLayerNeuron++) {
-                arg.setWeight(arg.getNumberHiddenLayers(), prevLayerNeuron, neuronNum, rnd.nextDouble());
-            }
-            arg.setBias(arg.getNumberHiddenLayers(), neuronNum, rnd.nextDouble());
-        }
     }
     
     @FXML
