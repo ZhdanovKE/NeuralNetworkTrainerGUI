@@ -25,21 +25,6 @@ import trainerapp.gui.model.NamedNeuralNetwork;
  */
 public class NeuralNetworkLoader {
     
-    public void save(NeuralNetwork nn, String fileName) {
-        if (nn == null || fileName == null) {
-            throw new NullPointerException("Arguments cannot be null");
-        }
-        File file = new File(fileName);
-        try (OutputStream out = new FileOutputStream(file)) {
-            try (ObjectOutputStream oos = new ObjectOutputStream(out)) {
-                oos.writeObject(nn);
-            }
-        }
-        catch(IOException e) {
-            throw new IllegalArgumentException("Cannot write into file", e);
-        }
-    }
-    
     /**
      * Save the {@link nn} network with name {@link name} into a file with path 
      * {@link fileName}.
@@ -60,60 +45,6 @@ public class NeuralNetworkLoader {
             }
         }
         catch(IOException e) {
-            throw new IllegalArgumentException("Cannot write into file", e);
-        }
-    }
-    
-    public void saveAsText(NeuralNetwork nn, String fileName) {
-        if (nn == null || fileName == null) {
-            throw new NullPointerException("Arguments cannot be null");
-        }
-        File file = new File(fileName);
-        try (Writer out = new FileWriter(file)) {
-            if (nn instanceof NamedNeuralNetwork) {
-                // write name
-                out.write(((NamedNeuralNetwork) nn).getName());
-                out.write("\n");
-            }
-            // write signature
-            String hiddenSizes = Arrays.stream(nn.getHiddenLayerSizes()).
-                    mapToObj(v -> String.valueOf(v)).collect(
-                            Collectors.joining(", "));
-            String signature = String.format("%d, %s, %d", nn.getNumberInputs(),
-                    hiddenSizes, nn.getNumberOutputs());
-            out.write(signature);
-            out.write("\n");
-
-            int curLayerIdx = 0;
-            int prevLayerSize = nn.getNumberInputs();
-            int curLayerSize = nn.getHiddenLayerSize(curLayerIdx);
-
-            // input <--> layer 1
-            String layerStr = layerToString(nn, curLayerIdx, 
-                    curLayerSize, prevLayerSize);
-            out.write(layerStr);
-            out.write("\n");
-
-            // hidden layers
-            for (curLayerIdx = 1; curLayerIdx < nn.getNumberHiddenLayers(); curLayerIdx++) {
-                prevLayerSize = nn.getHiddenLayerSize(curLayerIdx - 1);
-                curLayerSize = nn.getHiddenLayerSize(curLayerIdx);
-                layerStr = layerToString(nn, curLayerIdx, 
-                    curLayerSize, prevLayerSize);
-                out.write(layerStr);
-                out.write("\n");
-            }
-            
-            // last layer <--> output
-            prevLayerSize = nn.getHiddenLayerSize(nn.getNumberHiddenLayers() - 1);
-            curLayerSize = nn.getNumberOutputs();
-            curLayerIdx = nn.getNumberHiddenLayers();
-            layerStr = layerToString(nn, curLayerIdx, 
-                curLayerSize, prevLayerSize);
-            out.write(layerStr);
-            out.flush();
-        }
-        catch (IOException e) {
             throw new IllegalArgumentException("Cannot write into file", e);
         }
     }
