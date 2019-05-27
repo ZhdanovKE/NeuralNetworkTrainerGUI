@@ -32,6 +32,8 @@ import javafx.util.converter.DoubleStringConverter;
  * @author Konstantin Zhdanov
  */
 public class LoadSamplesWindowController implements Initializable {
+    
+    private static final String DELIMETER = ",";
 
     @FXML
     private Button removeSampleButton;
@@ -126,7 +128,7 @@ public class LoadSamplesWindowController implements Initializable {
     // Parse a CSV file line. 
     // Return null if cannot be parsed
     private ObservableList<Double> parseLine(String line) {
-        String[] lineValues = line.split(";");
+        String[] lineValues = line.split(DELIMETER);
         ObservableList<Double> sample;
         try {
             sample = FXCollections.observableArrayList();
@@ -144,7 +146,7 @@ public class LoadSamplesWindowController implements Initializable {
     
     // extract header titles from a CSV line
     private String[] extractHeaderTitles(String line) {
-        String[] lineValues = line.split(";");
+        String[] lineValues = line.split(DELIMETER);
         String[] headerValues = new String[lineValues.length];
         for (int headerColNum = 0; headerColNum < headerValues.length; headerColNum++) {
             headerValues[headerColNum] = lineValues[headerColNum].trim();
